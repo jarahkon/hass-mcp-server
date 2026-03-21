@@ -1,0 +1,29 @@
+{
+  "name": "home-assistant-mcp-server",
+  "version": "0.1.0",
+  "description": "MCP server for full Home Assistant control — dashboards, files, automations, add-ons, and more",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "home-assistant-mcp-server": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsc --watch"
+  },
+  "keywords": ["mcp", "home-assistant", "lovelace", "dashboard", "automation"],
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.27.1",
+    "ws": "^8.20.0",
+    "ssh2-sftp-client": "^12.1.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/ws": "^8.18.1",
+    "@types/ssh2-sftp-client": "^9.0.6",
+    "typescript": "^5.9.3"
+  }
+}
