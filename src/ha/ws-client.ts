@@ -39,7 +39,7 @@ export class WsClient {
   private _connect(): Promise<void> {
     return new Promise((resolve, reject) => {
       const wsUrl = this.config.haUrl.replace(/^http/, "ws") + "/api/websocket";
-      this.ws = new WebSocket(wsUrl);
+      this.ws = new WebSocket(wsUrl, { rejectUnauthorized: false });
       this.authenticated = false;
 
       this.ws.on("message", (data) => {

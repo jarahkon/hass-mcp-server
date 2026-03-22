@@ -4,7 +4,10 @@
       "type": "stdio",
       "command": "node",
       "args": ["dist/index.js"],
-      "envFile": "${workspaceFolder}/.env"
+      "envFile": "${workspaceFolder}/.env",
+      "env": {
+        "NODE_TLS_REJECT_UNAUTHORIZED": "0"
+      }
     }
   }
 }
