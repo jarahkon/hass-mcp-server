@@ -1,0 +1,10 @@
+{
+  "servers": {
+    "home-assistant": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["dist/index.js"],
+      "envFile": "${workspaceFolder}/.env"
+    }
+  }
+}
