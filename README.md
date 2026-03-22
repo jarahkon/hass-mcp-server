@@ -1,6 +1,6 @@
 # home-assistant-mcp-server
 
-MCP server for full Home Assistant control. AI agents (GitHub Copilot, Claude, etc.) can manage your dashboards, automations, files, add-ons, entities, and more — so you never have to touch HA settings yourself.
+MCP server for full Home Assistant control. AI agents (GitHub Copilot, Claude, etc.) can manage your dashboards, automations, files, apps, entities, and more — so you never have to touch HA settings yourself.
 
 ## Features
 
@@ -8,7 +8,7 @@ MCP server for full Home Assistant control. AI agents (GitHub Copilot, Claude, e
 - **File management** — Upload, read, list, and delete files on your HA instance via SFTP (e.g. custom cards, images, HTML files)
 - **Automations, scripts, scenes** — Full CRUD for automations, scripts, and scenes
 - **Input helpers** — Create and manage input_boolean, input_number, input_text, input_select, input_datetime, input_button, counter, and timer helpers
-- **Add-on management** — Install, start, stop, restart, uninstall, and configure add-ons
+- **App management** — Install, start, stop, restart, uninstall, and configure apps (add-ons)
 - **Entity & service control** — Query states, call services, render templates, browse entity/device/area registries
 - **System tools** — System info, config validation, backups, core restart, error log
 - **Event & calendar tools** — List event types, fire events, calendar queries
@@ -21,7 +21,7 @@ MCP server for full Home Assistant control. AI agents (GitHub Copilot, Claude, e
 - **Home Assistant OS** (or any HA installation with Supervisor)
 - **Long-lived access token** — Create one in HA → Profile → Security → Long-Lived Access Tokens
 - **Node.js 18+**
-- **(Optional) SSH add-on** — Required only for file management tools. Install "Advanced SSH & Web Terminal" from the add-on store.
+- **(Optional) SSH app** — Required only for file management tools. Install "Advanced SSH & Web Terminal" from the app store.
 
 ## Installation
 
@@ -42,11 +42,15 @@ HA_URL=http://homeassistant.local:8123
 HA_TOKEN=your_long_lived_access_token_here
 
 # Optional — required only for file management tools (ha_upload_file, ha_read_file, etc.)
-# Install the "Advanced SSH & Web Terminal" add-on in HA first
+# Install the "Advanced SSH & Web Terminal" app in HA first.
+# Username MUST be "root" when SFTP is enabled (addon limitation).
 HA_SSH_HOST=homeassistant.local
 HA_SSH_PORT=22
 HA_SSH_USER=root
-HA_SSH_PASSWORD=your_ssh_password_here
+
+# Authentication: use EITHER a private key (recommended) OR a password
+HA_SSH_KEY_PATH=C:/Users/you/.ssh/ha_ed25519
+# HA_SSH_PASSWORD=your_ssh_password_here
 ```
 
 ### Getting a Long-Lived Access Token
@@ -58,11 +62,40 @@ HA_SSH_PASSWORD=your_ssh_password_here
 
 ### Setting Up SSH (for file management)
 
-1. In HA, go to **Settings → Add-ons → Add-on Store**
+1. In HA, go to **Settings → Apps → App Store**
 2. Install **Advanced SSH & Web Terminal**
-3. In the add-on configuration, set a password
-4. Start the add-on
-5. Add the SSH credentials to your `.env` file
+3. In the app configuration, set the username to `root` (required for SFTP) and enable `sftp: true`
+4. Configure authentication — either set a password or add your public key to `authorized_keys` (recommended)
+5. Start the app and check the logs to confirm it started successfully
+6. Add the SSH credentials to your `.env` file
+
+#### Generating an SSH key (recommended)
+
+Key-based authentication is more secure than passwords.
+
+```bash
+# Generate a key pair (leave passphrase empty for automated use)
+ssh-keygen -t ed25519 -f ~/.ssh/ha_ed25519 -C "ha-mcp-server"
+```
+
+This creates `~/.ssh/ha_ed25519` (private key) and `~/.ssh/ha_ed25519.pub` (public key).
+
+Add the **public key** contents to the app configuration in HA:
+
+```yaml
+ssh:
+  username: root
+  password: ""
+  authorized_keys:
+    - "ssh-ed25519 AAAA...contents of ha_ed25519.pub..."
+  sftp: true
+```
+
+Then set `HA_SSH_KEY_PATH` in your `.env` to the **private key** path:
+
+```env
+HA_SSH_KEY_PATH=C:/Users/you/.ssh/ha_ed25519
+```
 
 ## VS Code Setup
 
@@ -81,7 +114,7 @@ Add this to your VS Code settings (`.vscode/mcp.json` in your workspace or user 
         "HA_SSH_HOST": "homeassistant.local",
         "HA_SSH_PORT": "22",
         "HA_SSH_USER": "root",
-        "HA_SSH_PASSWORD": "your_ssh_password_here"
+        "HA_SSH_KEY_PATH": "C:/Users/you/.ssh/ha_ed25519"
       }
     }
   }
@@ -150,18 +183,18 @@ The server communicates via stdio — it's meant to be launched by an MCP client
 | `ha_update_helper` | Update an existing helper |
 | `ha_delete_helper` | Delete a helper |
 
-### Add-ons & System (17 tools)
+### Apps & System (17 tools)
 
 | Tool | Description |
 |------|-------------|
-| `ha_list_addons` | List all installed add-ons with status |
-| `ha_addon_info` | Get detailed info about a specific add-on |
-| `ha_install_addon` | Install an add-on by slug |
-| `ha_start_addon` | Start an add-on |
-| `ha_stop_addon` | Stop an add-on |
-| `ha_restart_addon` | Restart an add-on |
-| `ha_uninstall_addon` | Uninstall an add-on |
-| `ha_addon_options` | Get or set add-on configuration options |
+| `ha_list_addons` | List all installed apps with status |
+| `ha_addon_info` | Get detailed info about a specific app |
+| `ha_install_addon` | Install an app by slug |
+| `ha_start_addon` | Start an app |
+| `ha_stop_addon` | Stop an app |
+| `ha_restart_addon` | Restart an app |
+| `ha_uninstall_addon` | Uninstall an app |
+| `ha_addon_options` | Get or set app configuration options |
 | `ha_system_info` | Get system info (core, OS, supervisor, host) |
 | `ha_check_config` | Validate HA configuration before reload |
 | `ha_create_backup` | Create a full or partial backup |
@@ -217,7 +250,7 @@ src/
     ├── dashboards.ts     # 6 dashboard tools
     ├── files.ts          # 7 file management tools
     ├── automations.ts    # 17 automation/script/scene/helper tools
-    ├── addons.ts         # 17 add-on and system tools
+    ├── addons.ts         # 17 app and system tools
     └── entities.ts       # 18 entity and service tools
 ```
 
@@ -225,7 +258,7 @@ src/
 
 - **SFTP path restrictions**: File operations are restricted to safe subdirectories under `/config/` (e.g., `www/`, `custom_components/`, `themes/`, `blueprints/`). Write operations to system directories like `deps/` or `.storage/` are blocked.
 - **Token security**: Never commit your `.env` file. The `.gitignore` already excludes it.
-- **SSH credentials**: Store SSH passwords in environment variables or the VS Code MCP config, not in code.
+- **SSH authentication**: Prefer SSH key-based auth (`HA_SSH_KEY_PATH`) over passwords. Never commit private keys or passwords to source control.
 
 ## License
 

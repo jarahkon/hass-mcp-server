@@ -1,5 +1,6 @@
 import SftpClient from "ssh2-sftp-client";
 import path from "path/posix";
+import { readFileSync } from "fs";
 import type { Config } from "../config.js";
 import { requireSshConfig } from "../config.js";
 
@@ -56,12 +57,20 @@ export class HaSftpClient {
 
     const sshConfig = requireSshConfig(this.config);
     this.sftp = new SftpClient();
-    await this.sftp.connect({
+
+    const connectOptions: SftpClient.ConnectOptions = {
       host: sshConfig.sshHost,
       port: sshConfig.sshPort,
       username: sshConfig.sshUser,
-      password: sshConfig.sshPassword,
-    });
+    };
+
+    if (sshConfig.sshPrivateKeyPath) {
+      connectOptions.privateKey = readFileSync(sshConfig.sshPrivateKeyPath);
+    } else if (sshConfig.sshPassword) {
+      connectOptions.password = sshConfig.sshPassword;
+    }
+
+    await this.sftp.connect(connectOptions);
     return this.sftp;
   }
 

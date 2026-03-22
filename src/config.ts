@@ -5,6 +5,7 @@ export interface Config {
   sshPort: number;
   sshUser?: string;
   sshPassword?: string;
+  sshPrivateKeyPath?: string;
 }
 
 export function loadConfig(): Config {
@@ -28,15 +29,24 @@ export function loadConfig(): Config {
     sshPort: parseInt(process.env.HA_SSH_PORT || "22", 10),
     sshUser: process.env.HA_SSH_USER,
     sshPassword: process.env.HA_SSH_PASSWORD,
+    sshPrivateKeyPath: process.env.HA_SSH_KEY_PATH,
   };
 }
 
-export function requireSshConfig(config: Config): Required<Pick<Config, "sshHost" | "sshUser" | "sshPassword">> & Config {
-  if (!config.sshHost || !config.sshUser || !config.sshPassword) {
+export type SshConfig = Required<Pick<Config, "sshHost" | "sshUser">> & Config & ({ sshPassword: string } | { sshPrivateKeyPath: string });
+
+export function requireSshConfig(config: Config): SshConfig {
+  if (!config.sshHost || !config.sshUser) {
     throw new Error(
-      "File management tools require SSH configuration. Set HA_SSH_HOST, HA_SSH_USER, and HA_SSH_PASSWORD environment variables. " +
+      "File management tools require SSH configuration. Set HA_SSH_HOST and HA_SSH_USER environment variables. " +
       "Install the 'Advanced SSH & Web Terminal' add-on in Home Assistant first."
     );
   }
-  return config as Required<Pick<Config, "sshHost" | "sshUser" | "sshPassword">> & Config;
+  if (!config.sshPassword && !config.sshPrivateKeyPath) {
+    throw new Error(
+      "SSH authentication requires either HA_SSH_PASSWORD or HA_SSH_KEY_PATH. " +
+      "Key-based auth (HA_SSH_KEY_PATH) is recommended for security."
+    );
+  }
+  return config as SshConfig;
 }
