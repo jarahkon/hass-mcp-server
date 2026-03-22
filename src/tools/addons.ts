@@ -203,4 +203,49 @@ export function registerSystemTools(server: McpServer, rest: RestClient): void {
       return { content: [{ type: "text", text: "Home Assistant core restart initiated. HA will be briefly unavailable." }] };
     }
   );
+
+  server.registerTool(
+    "ha_check_api",
+    {
+      description: "Check if the Home Assistant API is accessible and responding",
+    },
+    async () => {
+      const result = await rest.get<{ message: string }>("/api/");
+      return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+    }
+  );
+
+  server.registerTool(
+    "ha_get_config",
+    {
+      description: "Get the Home Assistant configuration (location, unit system, version, components, etc.)",
+    },
+    async () => {
+      const result = await rest.get("/api/config");
+      return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+    }
+  );
+
+  server.registerTool(
+    "ha_get_components",
+    {
+      description: "List all currently loaded Home Assistant integrations/components",
+    },
+    async () => {
+      const config = await rest.get<{ components: string[] }>("/api/config");
+      const components = config.components ?? [];
+      return { content: [{ type: "text", text: JSON.stringify(components.sort(), null, 2) }] };
+    }
+  );
+
+  server.registerTool(
+    "ha_get_error_log",
+    {
+      description: "Get the Home Assistant error log contents",
+    },
+    async () => {
+      const result = await rest.get<string>("/api/error_log");
+      return { content: [{ type: "text", text: typeof result === "string" ? result : JSON.stringify(result) }] };
+    }
+  );
 }

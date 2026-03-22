@@ -161,4 +161,132 @@ export function registerEntityTools(server: McpServer, rest: RestClient, ws: WsC
       return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
     }
   );
+
+  server.registerTool(
+    "ha_get_logbook",
+    {
+      description: "Get logbook entries (activity log) for a time period, optionally filtered by entity",
+      inputSchema: {
+        entity_id: z.string().optional().describe("Filter by entity ID. Omit for all entries."),
+        start_time: z.string().optional().describe("ISO 8601 start time. Defaults to 1 day ago."),
+        end_time: z.string().optional().describe("ISO 8601 end time. Defaults to now."),
+      },
+    },
+    async ({ entity_id, start_time, end_time }) => {
+      const start = start_time || new Date(Date.now() - 86400000).toISOString();
+      let path = `/api/logbook/${encodeURIComponent(start)}`;
+      const params: string[] = [];
+      if (entity_id) params.push(`entity=${encodeURIComponent(entity_id)}`);
+      if (end_time) params.push(`end_time=${encodeURIComponent(end_time)}`);
+      if (params.length) path += `?${params.join("&")}`;
+      const result = await rest.get(path);
+      return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+    }
+  );
+
+  server.registerTool(
+    "ha_get_events",
+    {
+      description: "List all available event types in Home Assistant",
+    },
+    async () => {
+      const result = await rest.get("/api/events");
+      return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+    }
+  );
+
+  server.registerTool(
+    "ha_fire_event",
+    {
+      description: "Fire a custom event in Home Assistant to trigger automations or integrations",
+      inputSchema: {
+        event_type: z.string().describe("Event type to fire (e.g. 'custom_event', 'guest_arrived')"),
+        event_data: z.record(z.unknown()).optional().describe("Optional event data payload"),
+      },
+    },
+    async ({ event_type, event_data }) => {
+      const result = await rest.post(`/api/events/${encodeURIComponent(event_type)}`, event_data ?? {});
+      return { content: [{ type: "text", text: `Event '${event_type}' fired.\n${JSON.stringify(result, null, 2)}` }] };
+    }
+  );
+
+  server.registerTool(
+    "ha_set_state",
+    {
+      description: "Set or create the state of an entity. Useful for creating virtual sensors or overriding states.",
+      inputSchema: {
+        entity_id: z.string().describe("Entity ID to set (e.g. 'sensor.my_custom_sensor')"),
+        state: z.string().describe("The state value to set"),
+        attributes: z.record(z.unknown()).optional().describe("Optional attributes to set on the entity"),
+      },
+    },
+    async ({ entity_id, state, attributes }) => {
+      const body: Record<string, unknown> = { state };
+      if (attributes) body.attributes = attributes;
+      const result = await rest.post(`/api/states/${encodeURIComponent(entity_id)}`, body);
+      return { content: [{ type: "text", text: `State set for '${entity_id}'.\n${JSON.stringify(result, null, 2)}` }] };
+    }
+  );
+
+  server.registerTool(
+    "ha_delete_state",
+    {
+      description: "Delete an entity state from Home Assistant",
+      inputSchema: {
+        entity_id: z.string().describe("Entity ID to delete"),
+      },
+    },
+    async ({ entity_id }) => {
+      await rest.delete(`/api/states/${encodeURIComponent(entity_id)}`);
+      return { content: [{ type: "text", text: `State for '${entity_id}' deleted.` }] };
+    }
+  );
+
+  server.registerTool(
+    "ha_get_calendars",
+    {
+      description: "List all calendar entities in Home Assistant",
+    },
+    async () => {
+      const result = await rest.get("/api/calendars");
+      return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+    }
+  );
+
+  server.registerTool(
+    "ha_get_calendar_events",
+    {
+      description: "Get events from a specific calendar entity",
+      inputSchema: {
+        entity_id: z.string().describe("Calendar entity ID (e.g. 'calendar.my_calendar')"),
+        start: z.string().optional().describe("ISO 8601 start time. Defaults to now."),
+        end: z.string().optional().describe("ISO 8601 end time. Defaults to 7 days from now."),
+      },
+    },
+    async ({ entity_id, start, end }) => {
+      const startTime = start || new Date().toISOString();
+      const endTime = end || new Date(Date.now() + 7 * 86400000).toISOString();
+      const result = await rest.get(
+        `/api/calendars/${encodeURIComponent(entity_id)}?start=${encodeURIComponent(startTime)}&end=${encodeURIComponent(endTime)}`
+      );
+      return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+    }
+  );
+
+  server.registerTool(
+    "ha_handle_intent",
+    {
+      description: "Handle a conversation/voice intent in Home Assistant (e.g. natural language commands)",
+      inputSchema: {
+        name: z.string().describe("Intent name (e.g. 'HassLightSet', 'HassTurnOn')"),
+        data: z.record(z.unknown()).optional().describe("Intent data/slots"),
+      },
+    },
+    async ({ name, data }) => {
+      const body: Record<string, unknown> = { name };
+      if (data) body.data = data;
+      const result = await rest.post("/api/intent/handle", body);
+      return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+    }
+  );
 }

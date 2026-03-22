@@ -10,9 +10,11 @@ MCP server for full Home Assistant control. AI agents (GitHub Copilot, Claude, e
 - **Input helpers** — Create and manage input_boolean, input_number, input_text, input_select, input_datetime, input_button, counter, and timer helpers
 - **Add-on management** — Install, start, stop, restart, uninstall, and configure add-ons
 - **Entity & service control** — Query states, call services, render templates, browse entity/device/area registries
-- **System tools** — System info, config validation, backups, core restart
+- **System tools** — System info, config validation, backups, core restart, error log
+- **Event & calendar tools** — List event types, fire events, calendar queries
+- **State management** — Set, delete entity states; handle intents
 
-**53 tools** across 5 categories, using three HA transport layers: REST API, WebSocket API, and SSH/SFTP.
+**65 tools** across 5 categories, using three HA transport layers: REST API, WebSocket API, and SSH/SFTP.
 
 ## Prerequisites
 
@@ -148,7 +150,7 @@ The server communicates via stdio — it's meant to be launched by an MCP client
 | `ha_update_helper` | Update an existing helper |
 | `ha_delete_helper` | Delete a helper |
 
-### Add-ons & System (13 tools)
+### Add-ons & System (17 tools)
 
 | Tool | Description |
 |------|-------------|
@@ -165,8 +167,12 @@ The server communicates via stdio — it's meant to be launched by an MCP client
 | `ha_create_backup` | Create a full or partial backup |
 | `ha_list_backups` | List all backups |
 | `ha_restart_core` | Restart Home Assistant core |
+| `ha_check_api` | Check if the HA API is accessible and responding |
+| `ha_get_config` | Get HA configuration (location, units, version, components) |
+| `ha_get_components` | List all loaded HA integrations/components |
+| `ha_get_error_log` | Get the Home Assistant error log contents |
 
-### Entities & Services (10 tools)
+### Entities & Services (18 tools)
 
 | Tool | Description |
 |------|-------------|
@@ -180,6 +186,14 @@ The server communicates via stdio — it's meant to be launched by an MCP client
 | `ha_list_areas` | List all areas (rooms) |
 | `ha_create_area` | Create a new area |
 | `ha_get_history` | Get state history for an entity over a time period |
+| `ha_get_logbook` | Get logbook entries (activity log), optionally filtered by entity |
+| `ha_get_events` | List all available event types |
+| `ha_fire_event` | Fire a custom event to trigger automations |
+| `ha_set_state` | Set or create an entity state (virtual sensors, overrides) |
+| `ha_delete_state` | Delete an entity state |
+| `ha_get_calendars` | List all calendar entities |
+| `ha_get_calendar_events` | Get events from a specific calendar |
+| `ha_handle_intent` | Handle a conversation/voice intent |
 
 ## Architecture
 
@@ -203,8 +217,8 @@ src/
     ├── dashboards.ts     # 6 dashboard tools
     ├── files.ts          # 7 file management tools
     ├── automations.ts    # 17 automation/script/scene/helper tools
-    ├── addons.ts         # 13 add-on and system tools
-    └── entities.ts       # 10 entity and service tools
+    ├── addons.ts         # 17 add-on and system tools
+    └── entities.ts       # 18 entity and service tools
 ```
 
 ## Security Notes
