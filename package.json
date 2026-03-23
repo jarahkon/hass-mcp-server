@@ -30,7 +30,7 @@
   "homepage": "https://github.com/jarahkon/home-assistant-mcp-server",
   "bugs": "https://github.com/jarahkon/home-assistant-mcp-server/issues",
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20.0.0"
   },
   "files": [
     "dist",
