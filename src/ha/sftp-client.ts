@@ -5,7 +5,14 @@ import type { Config } from "../config.js";
 import { requireSshConfig } from "../config.js";
 
 const CONFIG_ROOT = "/config";
-const ALLOWED_PREFIXES = ["/config/www/", "/config/custom_components/", "/config/blueprints/", "/config/themes/", "/config/scripts/", "/config/automations/"];
+const ALLOWED_PREFIXES = [
+  "/config/www/",
+  "/config/custom_components/",
+  "/config/blueprints/",
+  "/config/themes/",
+  "/config/scripts/",
+  "/config/automations/",
+];
 
 export class HaSftpClient {
   private config: Config;
@@ -39,7 +46,7 @@ export class HaSftpClient {
     if (!isSafe) {
       throw new Error(
         `Write/delete not allowed at '${resolvedPath}'. Allowed paths: ${ALLOWED_PREFIXES.join(", ")}. ` +
-        `Reading is allowed anywhere under /config/.`
+          `Reading is allowed anywhere under /config/.`,
       );
     }
   }
@@ -74,7 +81,9 @@ export class HaSftpClient {
     return this.sftp;
   }
 
-  async list(remotePath: string): Promise<Array<{ name: string; type: string; size: number; modifyTime: number }>> {
+  async list(
+    remotePath: string,
+  ): Promise<Array<{ name: string; type: string; size: number; modifyTime: number }>> {
     const resolved = this.resolveSafePath(remotePath);
     const client = await this.getClient();
     const items = await client.list(resolved);

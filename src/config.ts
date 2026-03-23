@@ -13,10 +13,14 @@ export function loadConfig(): Config {
   const haToken = process.env.HA_TOKEN;
 
   if (!haUrl) {
-    throw new Error("HA_URL environment variable is required (e.g. http://homeassistant.local:8123)");
+    throw new Error(
+      "HA_URL environment variable is required (e.g. http://homeassistant.local:8123)",
+    );
   }
   if (!haToken) {
-    throw new Error("HA_TOKEN environment variable is required (long-lived access token from HA Profile → Security)");
+    throw new Error(
+      "HA_TOKEN environment variable is required (long-lived access token from HA Profile → Security)",
+    );
   }
 
   // Strip trailing slash from URL
@@ -33,19 +37,21 @@ export function loadConfig(): Config {
   };
 }
 
-export type SshConfig = Required<Pick<Config, "sshHost" | "sshUser">> & Config & ({ sshPassword: string } | { sshPrivateKeyPath: string });
+export type SshConfig = Required<Pick<Config, "sshHost" | "sshUser">> &
+  Config &
+  ({ sshPassword: string } | { sshPrivateKeyPath: string });
 
 export function requireSshConfig(config: Config): SshConfig {
   if (!config.sshHost || !config.sshUser) {
     throw new Error(
       "File management tools require SSH configuration. Set HA_SSH_HOST and HA_SSH_USER environment variables. " +
-      "Install the 'Advanced SSH & Web Terminal' add-on in Home Assistant first."
+        "Install the 'Advanced SSH & Web Terminal' add-on in Home Assistant first.",
     );
   }
   if (!config.sshPassword && !config.sshPrivateKeyPath) {
     throw new Error(
       "SSH authentication requires either HA_SSH_PASSWORD or HA_SSH_KEY_PATH. " +
-      "Key-based auth (HA_SSH_KEY_PATH) is recommended for security."
+        "Key-based auth (HA_SSH_KEY_PATH) is recommended for security.",
     );
   }
   return config as SshConfig;

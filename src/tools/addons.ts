@@ -10,8 +10,10 @@ export function registerAddonTools(server: McpServer, rest: RestClient): void {
     },
     async () => {
       const result = await rest.get<{ data: { addons: unknown[] } }>("/api/hassio/addons");
-      return { content: [{ type: "text", text: JSON.stringify(result.data?.addons ?? result, null, 2) }] };
-    }
+      return {
+        content: [{ type: "text", text: JSON.stringify(result.data?.addons ?? result, null, 2) }],
+      };
+    },
   );
 
   server.registerTool(
@@ -19,13 +21,17 @@ export function registerAddonTools(server: McpServer, rest: RestClient): void {
     {
       description: "Get detailed information about a specific add-on",
       inputSchema: {
-        slug: z.string().describe("Add-on slug (e.g. 'a0d7b954_ssh', 'core_configurator'). Get slugs from ha_list_addons."),
+        slug: z
+          .string()
+          .describe(
+            "Add-on slug (e.g. 'a0d7b954_ssh', 'core_configurator'). Get slugs from ha_list_addons.",
+          ),
       },
     },
     async ({ slug }) => {
       const result = await rest.get(`/api/hassio/addons/${encodeURIComponent(slug)}/info`);
       return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
-    }
+    },
   );
 
   server.registerTool(
@@ -39,7 +45,7 @@ export function registerAddonTools(server: McpServer, rest: RestClient): void {
     async ({ slug }) => {
       await rest.post(`/api/hassio/addons/${encodeURIComponent(slug)}/install`);
       return { content: [{ type: "text", text: `Add-on '${slug}' installed successfully.` }] };
-    }
+    },
   );
 
   server.registerTool(
@@ -53,7 +59,7 @@ export function registerAddonTools(server: McpServer, rest: RestClient): void {
     async ({ slug }) => {
       await rest.post(`/api/hassio/addons/${encodeURIComponent(slug)}/start`);
       return { content: [{ type: "text", text: `Add-on '${slug}' started.` }] };
-    }
+    },
   );
 
   server.registerTool(
@@ -67,7 +73,7 @@ export function registerAddonTools(server: McpServer, rest: RestClient): void {
     async ({ slug }) => {
       await rest.post(`/api/hassio/addons/${encodeURIComponent(slug)}/stop`);
       return { content: [{ type: "text", text: `Add-on '${slug}' stopped.` }] };
-    }
+    },
   );
 
   server.registerTool(
@@ -81,7 +87,7 @@ export function registerAddonTools(server: McpServer, rest: RestClient): void {
     async ({ slug }) => {
       await rest.post(`/api/hassio/addons/${encodeURIComponent(slug)}/restart`);
       return { content: [{ type: "text", text: `Add-on '${slug}' restarted.` }] };
-    }
+    },
   );
 
   server.registerTool(
@@ -95,7 +101,7 @@ export function registerAddonTools(server: McpServer, rest: RestClient): void {
     async ({ slug }) => {
       await rest.post(`/api/hassio/addons/${encodeURIComponent(slug)}/uninstall`);
       return { content: [{ type: "text", text: `Add-on '${slug}' uninstalled.` }] };
-    }
+    },
   );
 
   server.registerTool(
@@ -104,7 +110,10 @@ export function registerAddonTools(server: McpServer, rest: RestClient): void {
       description: "Get or set configuration options for an add-on",
       inputSchema: {
         slug: z.string().describe("Add-on slug"),
-        options: z.record(z.unknown()).optional().describe("New options to set. Omit to get current options."),
+        options: z
+          .record(z.unknown())
+          .optional()
+          .describe("New options to set. Omit to get current options."),
       },
     },
     async ({ slug, options }) => {
@@ -113,8 +122,19 @@ export function registerAddonTools(server: McpServer, rest: RestClient): void {
         return { content: [{ type: "text", text: `Options updated for '${slug}'.` }] };
       }
       const result = await rest.get(`/api/hassio/addons/${encodeURIComponent(slug)}/info`);
-      return { content: [{ type: "text", text: JSON.stringify((result as { data?: { options?: unknown } })?.data?.options ?? result, null, 2) }] };
-    }
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(
+              (result as { data?: { options?: unknown } })?.data?.options ?? result,
+              null,
+              2,
+            ),
+          },
+        ],
+      };
+    },
   );
 }
 
@@ -122,7 +142,8 @@ export function registerSystemTools(server: McpServer, rest: RestClient): void {
   server.registerTool(
     "ha_system_info",
     {
-      description: "Get Home Assistant system information (core version, OS, supervisor, host info)",
+      description:
+        "Get Home Assistant system information (core version, OS, supervisor, host info)",
     },
     async () => {
       const results: Record<string, unknown> = {};
@@ -141,18 +162,19 @@ export function registerSystemTools(server: McpServer, rest: RestClient): void {
         }
       }
       return { content: [{ type: "text", text: JSON.stringify(results, null, 2) }] };
-    }
+    },
   );
 
   server.registerTool(
     "ha_check_config",
     {
-      description: "Validate the Home Assistant configuration. Run this before reloading to catch errors.",
+      description:
+        "Validate the Home Assistant configuration. Run this before reloading to catch errors.",
     },
     async () => {
       const result = await rest.post("/api/config/core/check_config");
       return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
-    }
+    },
   );
 
   server.registerTool(
@@ -161,9 +183,19 @@ export function registerSystemTools(server: McpServer, rest: RestClient): void {
       description: "Create a Home Assistant backup",
       inputSchema: {
         name: z.string().optional().describe("Backup name. Defaults to timestamp."),
-        partial: z.boolean().optional().default(false).describe("Create a partial backup instead of full backup"),
-        folders: z.array(z.string()).optional().describe("For partial backup: folders to include (e.g. ['config', 'share'])"),
-        addons: z.array(z.string()).optional().describe("For partial backup: add-on slugs to include"),
+        partial: z
+          .boolean()
+          .optional()
+          .default(false)
+          .describe("Create a partial backup instead of full backup"),
+        folders: z
+          .array(z.string())
+          .optional()
+          .describe("For partial backup: folders to include (e.g. ['config', 'share'])"),
+        addons: z
+          .array(z.string())
+          .optional()
+          .describe("For partial backup: add-on slugs to include"),
       },
     },
     async ({ name, partial, folders, addons }) => {
@@ -174,12 +206,26 @@ export function registerSystemTools(server: McpServer, rest: RestClient): void {
         if (folders) body.folders = folders;
         if (addons) body.addons = addons;
         const result = await rest.post("/api/hassio/backups/new/partial", body);
-        return { content: [{ type: "text", text: `Partial backup created: ${backupName}\n${JSON.stringify(result, null, 2)}` }] };
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Partial backup created: ${backupName}\n${JSON.stringify(result, null, 2)}`,
+            },
+          ],
+        };
       }
 
       const result = await rest.post("/api/hassio/backups/new/full", { name: backupName });
-      return { content: [{ type: "text", text: `Full backup created: ${backupName}\n${JSON.stringify(result, null, 2)}` }] };
-    }
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Full backup created: ${backupName}\n${JSON.stringify(result, null, 2)}`,
+          },
+        ],
+      };
+    },
   );
 
   server.registerTool(
@@ -190,7 +236,7 @@ export function registerSystemTools(server: McpServer, rest: RestClient): void {
     async () => {
       const result = await rest.get("/api/hassio/backups");
       return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
-    }
+    },
   );
 
   server.registerTool(
@@ -200,8 +246,15 @@ export function registerSystemTools(server: McpServer, rest: RestClient): void {
     },
     async () => {
       await rest.post("/api/hassio/core/restart");
-      return { content: [{ type: "text", text: "Home Assistant core restart initiated. HA will be briefly unavailable." }] };
-    }
+      return {
+        content: [
+          {
+            type: "text",
+            text: "Home Assistant core restart initiated. HA will be briefly unavailable.",
+          },
+        ],
+      };
+    },
   );
 
   server.registerTool(
@@ -212,18 +265,19 @@ export function registerSystemTools(server: McpServer, rest: RestClient): void {
     async () => {
       const result = await rest.get<{ message: string }>("/api/");
       return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
-    }
+    },
   );
 
   server.registerTool(
     "ha_get_config",
     {
-      description: "Get the Home Assistant configuration (location, unit system, version, components, etc.)",
+      description:
+        "Get the Home Assistant configuration (location, unit system, version, components, etc.)",
     },
     async () => {
       const result = await rest.get("/api/config");
       return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
-    }
+    },
   );
 
   server.registerTool(
@@ -235,7 +289,7 @@ export function registerSystemTools(server: McpServer, rest: RestClient): void {
       const config = await rest.get<{ components: string[] }>("/api/config");
       const components = config.components ?? [];
       return { content: [{ type: "text", text: JSON.stringify(components.sort(), null, 2) }] };
-    }
+    },
   );
 
   server.registerTool(
@@ -245,7 +299,11 @@ export function registerSystemTools(server: McpServer, rest: RestClient): void {
     },
     async () => {
       const result = await rest.get<string>("/api/error_log");
-      return { content: [{ type: "text", text: typeof result === "string" ? result : JSON.stringify(result) }] };
-    }
+      return {
+        content: [
+          { type: "text", text: typeof result === "string" ? result : JSON.stringify(result) },
+        ],
+      };
+    },
   );
 }

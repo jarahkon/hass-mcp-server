@@ -8,7 +8,12 @@ import { WsClient } from "./ha/ws-client.js";
 import { HaSftpClient } from "./ha/sftp-client.js";
 import { registerDashboardTools } from "./tools/dashboards.js";
 import { registerFileTools } from "./tools/files.js";
-import { registerAutomationTools, registerScriptTools, registerSceneTools, registerHelperTools } from "./tools/automations.js";
+import {
+  registerAutomationTools,
+  registerScriptTools,
+  registerSceneTools,
+  registerHelperTools,
+} from "./tools/automations.js";
 import { registerAddonTools, registerSystemTools } from "./tools/addons.js";
 import { registerEntityTools } from "./tools/entities.js";
 
@@ -23,7 +28,7 @@ async function main(): Promise<void> {
   // Create MCP server
   const server = new McpServer({
     name: "home-assistant-mcp-server",
-    version: "0.1.0",
+    version: "1.0.0",
   });
 
   // Register all tool groups

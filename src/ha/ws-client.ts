@@ -61,7 +61,18 @@ export class WsClient {
     });
   }
 
-  private handleMessage(msg: { type: string; id?: number; success?: boolean; result?: unknown; error?: { code: string; message: string }; ha_version?: string }, resolve: () => void, reject: (err: Error) => void): void {
+  private handleMessage(
+    msg: {
+      type: string;
+      id?: number;
+      success?: boolean;
+      result?: unknown;
+      error?: { code: string; message: string };
+      ha_version?: string;
+    },
+    resolve: () => void,
+    reject: (err: Error) => void,
+  ): void {
     switch (msg.type) {
       case "auth_required":
         this.ws!.send(JSON.stringify({ type: "auth", access_token: this.config.haToken }));

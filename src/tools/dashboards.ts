@@ -11,7 +11,7 @@ export function registerDashboardTools(server: McpServer, ws: WsClient): void {
     async () => {
       const result = await ws.sendCommand("lovelace/dashboards/list");
       return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
-    }
+    },
   );
 
   server.registerTool(
@@ -19,11 +19,23 @@ export function registerDashboardTools(server: McpServer, ws: WsClient): void {
     {
       description: "Create a new Lovelace dashboard",
       inputSchema: {
-        url_path: z.string().describe("URL path for the dashboard (e.g. 'tablet', 'kitchen'). Will be accessible at /lovelace-{url_path}/"),
+        url_path: z
+          .string()
+          .describe(
+            "URL path for the dashboard (e.g. 'tablet', 'kitchen'). Will be accessible at /lovelace-{url_path}/",
+          ),
         title: z.string().describe("Display title for the dashboard"),
         icon: z.string().optional().describe("Material Design icon (e.g. 'mdi:tablet')"),
-        require_admin: z.boolean().optional().default(false).describe("Whether to require admin access"),
-        show_in_sidebar: z.boolean().optional().default(true).describe("Whether to show in the sidebar"),
+        require_admin: z
+          .boolean()
+          .optional()
+          .default(false)
+          .describe("Whether to require admin access"),
+        show_in_sidebar: z
+          .boolean()
+          .optional()
+          .default(true)
+          .describe("Whether to show in the sidebar"),
       },
     },
     async ({ url_path, title, icon, require_admin, show_in_sidebar }) => {
@@ -35,8 +47,15 @@ export function registerDashboardTools(server: McpServer, ws: WsClient): void {
         show_in_sidebar,
         mode: "storage",
       });
-      return { content: [{ type: "text", text: `Dashboard created successfully.\n${JSON.stringify(result, null, 2)}` }] };
-    }
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Dashboard created successfully.\n${JSON.stringify(result, null, 2)}`,
+          },
+        ],
+      };
+    },
   );
 
   server.registerTool(
@@ -57,8 +76,10 @@ export function registerDashboardTools(server: McpServer, ws: WsClient): void {
         if (value !== undefined) payload[key] = value;
       }
       const result = await ws.sendCommand("lovelace/dashboards/update", payload);
-      return { content: [{ type: "text", text: `Dashboard updated.\n${JSON.stringify(result, null, 2)}` }] };
-    }
+      return {
+        content: [{ type: "text", text: `Dashboard updated.\n${JSON.stringify(result, null, 2)}` }],
+      };
+    },
   );
 
   server.registerTool(
@@ -71,8 +92,10 @@ export function registerDashboardTools(server: McpServer, ws: WsClient): void {
     },
     async ({ dashboard_id }) => {
       await ws.sendCommand("lovelace/dashboards/delete", { dashboard_id });
-      return { content: [{ type: "text", text: `Dashboard '${dashboard_id}' deleted successfully.` }] };
-    }
+      return {
+        content: [{ type: "text", text: `Dashboard '${dashboard_id}' deleted successfully.` }],
+      };
+    },
   );
 
   server.registerTool(
@@ -80,7 +103,10 @@ export function registerDashboardTools(server: McpServer, ws: WsClient): void {
     {
       description: "Get the full Lovelace configuration of a dashboard (all views, cards, etc.)",
       inputSchema: {
-        url_path: z.string().optional().describe("Dashboard URL path (e.g. 'tablet'). Omit for default dashboard."),
+        url_path: z
+          .string()
+          .optional()
+          .describe("Dashboard URL path (e.g. 'tablet'). Omit for default dashboard."),
       },
     },
     async ({ url_path }) => {
@@ -88,23 +114,38 @@ export function registerDashboardTools(server: McpServer, ws: WsClient): void {
       if (url_path) payload.url_path = url_path;
       const result = await ws.sendCommand("lovelace/config", payload);
       return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
-    }
+    },
   );
 
   server.registerTool(
     "ha_save_dashboard_config",
     {
-      description: "Save/overwrite the full Lovelace configuration of a dashboard. Provide the complete config with views and cards.",
+      description:
+        "Save/overwrite the full Lovelace configuration of a dashboard. Provide the complete config with views and cards.",
       inputSchema: {
-        url_path: z.string().optional().describe("Dashboard URL path (e.g. 'tablet'). Omit for default dashboard."),
-        config: z.record(z.unknown()).describe("Full Lovelace configuration object with 'views' array. Example: { views: [{ title: 'Home', cards: [...] }] }"),
+        url_path: z
+          .string()
+          .optional()
+          .describe("Dashboard URL path (e.g. 'tablet'). Omit for default dashboard."),
+        config: z
+          .record(z.unknown())
+          .describe(
+            "Full Lovelace configuration object with 'views' array. Example: { views: [{ title: 'Home', cards: [...] }] }",
+          ),
       },
     },
     async ({ url_path, config }) => {
       const payload: Record<string, unknown> = { config };
       if (url_path) payload.url_path = url_path;
       await ws.sendCommand("lovelace/config/save", payload);
-      return { content: [{ type: "text", text: `Dashboard config saved successfully${url_path ? ` for '${url_path}'` : " for default dashboard"}.` }] };
-    }
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Dashboard config saved successfully${url_path ? ` for '${url_path}'` : " for default dashboard"}.`,
+          },
+        ],
+      };
+    },
   );
 }

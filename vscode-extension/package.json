@@ -1,0 +1,50 @@
+{
+  "name": "home-assistant-mcp-server",
+  "displayName": "Home Assistant MCP Server",
+  "description": "MCP server for full Home Assistant control — dashboards, files, automations, add-ons, entities, and more",
+  "version": "1.0.0",
+  "publisher": "jarahkon",
+  "license": "MIT",
+  "icon": "icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jarahkon/home-assistant-mcp-server"
+  },
+  "homepage": "https://github.com/jarahkon/home-assistant-mcp-server",
+  "bugs": {
+    "url": "https://github.com/jarahkon/home-assistant-mcp-server/issues"
+  },
+  "engines": {
+    "vscode": "^1.99.0"
+  },
+  "categories": [
+    "AI",
+    "Chat"
+  ],
+  "keywords": [
+    "mcp",
+    "home-assistant",
+    "copilot",
+    "ai",
+    "chat",
+    "lovelace",
+    "automation",
+    "smart-home"
+  ],
+  "contributes": {
+    "mcpServers": {
+      "home-assistant": {
+        "type": "stdio",
+        "command": "npx",
+        "args": [
+          "-y",
+          "home-assistant-mcp-server@latest"
+        ],
+        "env": {
+          "HA_URL": "",
+          "HA_TOKEN": ""
+        }
+      }
+    }
+  }
+}

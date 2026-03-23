@@ -1,5 +1,9 @@
 # home-assistant-mcp-server
 
+[![npm version](https://img.shields.io/npm/v/home-assistant-mcp-server)](https://www.npmjs.com/package/home-assistant-mcp-server)
+[![CI](https://github.com/jarahkon/home-assistant-mcp-server/actions/workflows/ci.yml/badge.svg)](https://github.com/jarahkon/home-assistant-mcp-server/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 MCP server for full Home Assistant control. AI agents (GitHub Copilot, Claude, etc.) can manage your dashboards, automations, files, apps, entities, and more — so you never have to touch HA settings yourself.
 
 ## Features
