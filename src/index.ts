@@ -39,7 +39,7 @@ async function main(): Promise<void> {
   registerSceneTools(server, ws);
   registerHelperTools(server, ws);
   registerAddonTools(server, rest);
-  registerSystemTools(server, rest);
+  registerSystemTools(server, rest, ws);
   registerEntityTools(server, rest, ws);
 
   // Handle graceful shutdown

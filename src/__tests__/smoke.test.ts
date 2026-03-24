@@ -33,12 +33,12 @@ describe("MCP tool registration smoke test", () => {
     registerSceneTools(server, mockWs);
     registerHelperTools(server, mockWs);
     registerAddonTools(server, mockRest);
-    registerSystemTools(server, mockRest);
+    registerSystemTools(server, mockRest, mockWs);
     registerEntityTools(server, mockRest, mockWs);
   });
 
   it("registers exactly 65 tools", () => {
-    expect(registerSpy).toHaveBeenCalledTimes(65);
+    expect(registerSpy).toHaveBeenCalledTimes(66);
   });
 
   it("every tool has a unique name", () => {

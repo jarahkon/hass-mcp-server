@@ -1,6 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import type { RestClient } from "../ha/rest-client.js";
+import type { WsClient } from "../ha/ws-client.js";
 
 export function registerAddonTools(server: McpServer, rest: RestClient): void {
   server.registerTool(
@@ -138,7 +139,7 @@ export function registerAddonTools(server: McpServer, rest: RestClient): void {
   );
 }
 
-export function registerSystemTools(server: McpServer, rest: RestClient): void {
+export function registerSystemTools(server: McpServer, rest: RestClient, ws: WsClient): void {
   server.registerTool(
     "ha_system_info",
     {
@@ -277,6 +278,25 @@ export function registerSystemTools(server: McpServer, rest: RestClient): void {
     async () => {
       const result = await rest.get("/api/config");
       return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+    },
+  );
+
+  server.registerTool(
+    "ha_update_core_config",
+    {
+      description:
+        "Update Home Assistant core configuration (internal_url, external_url, location, etc.)",
+      inputSchema: {
+        internal_url: z.string().optional().describe("Internal URL for Home Assistant (e.g. http://homeassistant.local:8123)"),
+        external_url: z.string().optional().describe("External URL for Home Assistant"),
+      },
+    },
+    async (params) => {
+      const payload: Record<string, string> = {};
+      if (params.internal_url !== undefined) payload.internal_url = params.internal_url;
+      if (params.external_url !== undefined) payload.external_url = params.external_url;
+      const result = await ws.sendCommand("config/core/update", payload);
+      return { content: [{ type: "text", text: JSON.stringify(result ?? { success: true }, null, 2) }] };
     },
   );
 

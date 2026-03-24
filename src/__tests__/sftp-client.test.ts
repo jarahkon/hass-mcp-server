@@ -99,10 +99,10 @@ describe("HaSftpClient path validation", () => {
       ).resolves.toBeUndefined();
     });
 
-    it("rejects writes to /config/configuration.yaml", async () => {
-      await expect(client.uploadBuffer("test", "/config/configuration.yaml")).rejects.toThrow(
-        "Write/delete not allowed",
-      );
+    it("allows writes to /config/configuration.yaml", async () => {
+      await expect(
+        client.uploadBuffer("test", "/config/configuration.yaml"),
+      ).resolves.toBeUndefined();
     });
 
     it("rejects writes to /config/ root", async () => {
@@ -112,7 +112,7 @@ describe("HaSftpClient path validation", () => {
     });
 
     it("rejects delete to unsafe paths", async () => {
-      await expect(client.deleteFile("/config/configuration.yaml")).rejects.toThrow(
+      await expect(client.deleteFile("/config/secrets.yaml")).rejects.toThrow(
         "Write/delete not allowed",
       );
     });

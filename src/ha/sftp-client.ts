@@ -14,6 +14,10 @@ const ALLOWED_PREFIXES = [
   "/config/automations/",
 ];
 
+const ALLOWED_FILES = [
+  "/config/configuration.yaml",
+];
+
 export class HaSftpClient {
   private config: Config;
   private sftp: SftpClient | null = null;
@@ -41,11 +45,13 @@ export class HaSftpClient {
   }
 
   private assertWriteSafePath(resolvedPath: string): void {
-    // For write/delete operations, restrict to known safe subdirectories
-    const isSafe = ALLOWED_PREFIXES.some((prefix) => resolvedPath.startsWith(prefix));
+    // For write/delete operations, restrict to known safe subdirectories or specific files
+    const isSafe =
+      ALLOWED_PREFIXES.some((prefix) => resolvedPath.startsWith(prefix)) ||
+      ALLOWED_FILES.includes(resolvedPath);
     if (!isSafe) {
       throw new Error(
-        `Write/delete not allowed at '${resolvedPath}'. Allowed paths: ${ALLOWED_PREFIXES.join(", ")}. ` +
+        `Write/delete not allowed at '${resolvedPath}'. Allowed paths: ${[...ALLOWED_PREFIXES, ...ALLOWED_FILES].join(", ")}. ` +
           `Reading is allowed anywhere under /config/.`,
       );
     }
@@ -111,9 +117,11 @@ export class HaSftpClient {
     this.assertWriteSafePath(resolved);
     const client = await this.getClient();
 
-    // Ensure parent directory exists
+    // Ensure parent directory exists (skip if it's the root config dir)
     const parentDir = path.dirname(resolved);
-    await client.mkdir(parentDir, true);
+    if (parentDir !== CONFIG_ROOT) {
+      await client.mkdir(parentDir, true);
+    }
 
     await client.put(Buffer.from(content, "utf-8"), resolved);
   }
@@ -123,9 +131,11 @@ export class HaSftpClient {
     this.assertWriteSafePath(resolved);
     const client = await this.getClient();
 
-    // Ensure parent directory exists
+    // Ensure parent directory exists (skip if it's the root config dir)
     const parentDir = path.dirname(resolved);
-    await client.mkdir(parentDir, true);
+    if (parentDir !== CONFIG_ROOT) {
+      await client.mkdir(parentDir, true);
+    }
 
     await client.put(localPath, resolved);
   }
