@@ -23,12 +23,9 @@
   ],
   "keywords": [
     "mcp",
+    "mcp-server",
     "home-assistant",
     "copilot",
-    "ai",
-    "chat",
-    "lovelace",
-    "automation",
     "smart-home"
   ],
   "contributes": {
