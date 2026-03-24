@@ -30,7 +30,7 @@
   "homepage": "https://github.com/jarahkon/hass-mcp-server",
   "bugs": "https://github.com/jarahkon/hass-mcp-server/issues",
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=22.0.0"
   },
   "files": [
     "dist",
