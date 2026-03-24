@@ -24,38 +24,35 @@ MCP server for full Home Assistant control. AI agents (GitHub Copilot, Claude, e
 
 - **Home Assistant OS** (or any HA installation with Supervisor)
 - **Long-lived access token** — Create one in HA → Profile → Security → Long-Lived Access Tokens
-- **Node.js 18+**
+- **Node.js 20+**
 - **(Optional) SSH app** — Required only for file management tools. Install "Advanced SSH & Web Terminal" from the app store.
 
-## Installation
+## Quick Start
 
-```bash
-git clone https://github.com/jarahkon/hass-mcp-server.git
-cd hass-mcp-server
-npm install
-npm run build
-```
+No installation needed — your MCP client runs the server automatically via `npx`. Just add the configuration to your client and you're ready to go.
 
 ## Configuration
 
-Create a `.env` file in the project root (see `.env.example`):
+The server is configured through **environment variables** set in your MCP client's configuration file. The client injects these into the server process at launch time — you never need to set system-wide environment variables.
 
-```env
-# Required
-HA_URL=http://homeassistant.local:8123
-HA_TOKEN=your_long_lived_access_token_here
+### Required Variables
 
-# Optional — required only for file management tools (ha_upload_file, ha_read_file, etc.)
-# Install the "Advanced SSH & Web Terminal" app in HA first.
-# Username MUST be "root" when SFTP is enabled (addon limitation).
-HA_SSH_HOST=homeassistant.local
-HA_SSH_PORT=22
-HA_SSH_USER=root
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `HA_URL` | Home Assistant base URL | `http://homeassistant.local:8123` |
+| `HA_TOKEN` | Long-lived access token | *(from HA Profile → Security)* |
 
-# Authentication: use EITHER a private key (recommended) OR a password
-HA_SSH_KEY_PATH=C:/Users/you/.ssh/ha_ed25519
-# HA_SSH_PASSWORD=your_ssh_password_here
-```
+### Optional Variables (for file management)
+
+File management tools require SSH access. See [Setting Up SSH](#setting-up-ssh-for-file-management) below.
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `HA_SSH_HOST` | SSH hostname | `homeassistant.local` |
+| `HA_SSH_PORT` | SSH port (default: `22`) | `22` |
+| `HA_SSH_USER` | SSH username (must be `root`) | `root` |
+| `HA_SSH_KEY_PATH` | Path to SSH private key | See [examples per OS](#ssh-key-path-examples) |
+| `HA_SSH_PASSWORD` | SSH password (alternative to key) | *(your password)* |
 
 ### Getting a Long-Lived Access Token
 
@@ -64,16 +61,114 @@ HA_SSH_KEY_PATH=C:/Users/you/.ssh/ha_ed25519
 3. Scroll to **Long-Lived Access Tokens** under the Security tab
 4. Click **Create Token**, give it a name, and copy the token
 
-### Setting Up SSH (for file management)
+## MCP Client Setup
+
+Choose the setup for your MCP client below. In each case, add the configuration and the client will automatically download and run the server via `npx`.
+
+> **Tip:** You can omit the `HA_SSH_*` variables if you don't need file management tools. The server will start without SFTP and only fail if you try to use a file tool.
+
+### VS Code (GitHub Copilot)
+
+Create `.vscode/mcp.json` in your workspace (or add to your User Settings for global access):
+
+```json
+{
+  "servers": {
+    "home-assistant": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "hass-mcp-server@latest"],
+      "env": {
+        "HA_URL": "http://homeassistant.local:8123",
+        "HA_TOKEN": "your_long_lived_access_token_here"
+      }
+    }
+  }
+}
+```
+
+With SSH (for file management tools):
+
+```json
+{
+  "servers": {
+    "home-assistant": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "hass-mcp-server@latest"],
+      "env": {
+        "HA_URL": "http://homeassistant.local:8123",
+        "HA_TOKEN": "your_long_lived_access_token_here",
+        "HA_SSH_HOST": "homeassistant.local",
+        "HA_SSH_USER": "root",
+        "HA_SSH_KEY_PATH": "/home/you/.ssh/ha_ed25519"
+      }
+    }
+  }
+}
+```
+
+### Claude Desktop
+
+Edit the Claude Desktop config file:
+
+| OS | Config file path |
+|----|------------------|
+| **Windows** | `%APPDATA%\Claude\claude_desktop_config.json` |
+| **macOS** | `~/Library/Application Support/Claude/claude_desktop_config.json` |
+| **Linux** | `~/.config/Claude/claude_desktop_config.json` |
+
+```json
+{
+  "mcpServers": {
+    "home-assistant": {
+      "command": "npx",
+      "args": ["-y", "hass-mcp-server@latest"],
+      "env": {
+        "HA_URL": "http://homeassistant.local:8123",
+        "HA_TOKEN": "your_long_lived_access_token_here"
+      }
+    }
+  }
+}
+```
+
+### Cursor
+
+Edit `~/.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "home-assistant": {
+      "command": "npx",
+      "args": ["-y", "hass-mcp-server@latest"],
+      "env": {
+        "HA_URL": "http://homeassistant.local:8123",
+        "HA_TOKEN": "your_long_lived_access_token_here"
+      }
+    }
+  }
+}
+```
+
+### Other MCP Clients
+
+Any MCP client that supports stdio servers will work. Use `npx` as the command with `-y hass-mcp-server@latest` as args, and pass `HA_URL` and `HA_TOKEN` in the `env` block.
+
+## Setting Up SSH (for file management)
+
+File management tools (`ha_upload_file`, `ha_read_file`, `ha_list_files`, etc.) require SSH access to your Home Assistant instance.
+
+### 1. Install the SSH app in Home Assistant
 
 1. In HA, go to **Settings → Apps → App Store**
 2. Install **Advanced SSH & Web Terminal**
 3. In the app configuration, set the username to `root` (required for SFTP) and enable `sftp: true`
 4. Configure authentication — either set a password or add your public key to `authorized_keys` (recommended)
 5. Start the app and check the logs to confirm it started successfully
-6. Add the SSH credentials to your `.env` file
 
-#### Generating an SSH key (recommended)
+### 2. Generate an SSH key (recommended)
 
 Key-based authentication is more secure than passwords.
 
@@ -95,50 +190,31 @@ ssh:
   sftp: true
 ```
 
-Then set `HA_SSH_KEY_PATH` in your `.env` to the **private key** path:
+### 3. Add SSH variables to your MCP client config
 
-```env
-HA_SSH_KEY_PATH=C:/Users/you/.ssh/ha_ed25519
-```
-
-## VS Code Setup
-
-Add this to your VS Code settings (`.vscode/mcp.json` in your workspace or user settings):
+Add these environment variables alongside `HA_URL` and `HA_TOKEN` in the `env` block of your MCP client configuration:
 
 ```json
-{
-  "servers": {
-    "home-assistant": {
-      "type": "stdio",
-      "command": "node",
-      "args": ["C:/path/to/hass-mcp-server/dist/index.js"],
-      "env": {
-        "HA_URL": "http://homeassistant.local:8123",
-        "HA_TOKEN": "your_long_lived_access_token_here",
-        "HA_SSH_HOST": "homeassistant.local",
-        "HA_SSH_PORT": "22",
-        "HA_SSH_USER": "root",
-        "HA_SSH_KEY_PATH": "C:/Users/you/.ssh/ha_ed25519"
-      }
-    }
-  }
-}
+"HA_SSH_HOST": "homeassistant.local",
+"HA_SSH_USER": "root",
+"HA_SSH_KEY_PATH": "/home/you/.ssh/ha_ed25519"
 ```
 
-> **Tip:** You can omit the `HA_SSH_*` variables if you don't need file management tools. The server will start without SFTP and only fail if you try to use a file tool.
+Or if using password authentication:
 
-## Running
-
-```bash
-# Build and start
-npm run build
-npm start
-
-# Or use watch mode during development
-npm run dev
+```json
+"HA_SSH_HOST": "homeassistant.local",
+"HA_SSH_USER": "root",
+"HA_SSH_PASSWORD": "your_ssh_password_here"
 ```
 
-The server communicates via stdio — it's meant to be launched by an MCP client (like VS Code Copilot), not run interactively.
+#### SSH key path examples
+
+| OS | Example `HA_SSH_KEY_PATH` |
+|----|---------------------------|
+| **Windows** | `C:/Users/you/.ssh/ha_ed25519` |
+| **macOS** | `/Users/you/.ssh/ha_ed25519` |
+| **Linux** | `/home/you/.ssh/ha_ed25519` |
 
 ## Tool Reference
 

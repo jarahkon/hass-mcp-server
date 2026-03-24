@@ -7,34 +7,100 @@ MCP server for full Home Assistant control. AI agents (GitHub Copilot, Claude, e
 ## Quick Start
 
 1. Install this extension from the VS Code Marketplace
-2. Create a long-lived access token in Home Assistant (Profile → Security → Long-Lived Access Tokens)
-3. Open VS Code settings and configure the MCP server environment variables:
+2. Create a long-lived access token in Home Assistant:
+   - Open your Home Assistant UI
+   - Click your profile icon (bottom-left)
+   - Go to the **Security** tab
+   - Under **Long-Lived Access Tokens**, click **Create Token** and copy it
+3. When VS Code prompts you for environment variables, enter:
    - `HA_URL` — your Home Assistant URL (e.g. `http://homeassistant.local:8123`)
    - `HA_TOKEN` — the long-lived access token you just created
 4. Start using Copilot Chat or any MCP-compatible AI agent to control your Home Assistant
 
-## Configuration
+That's it — the extension automatically downloads and runs the server via `npx`. No manual installation needed.
 
-The extension registers the MCP server via `npx`, so no manual installation is needed. You only need to set environment variables.
+## Configuring SSH (Optional — for file management)
 
-### Required Variables
+File management tools (`ha_upload_file`, `ha_read_file`, `ha_list_files`, etc.) require SSH access to your Home Assistant instance. If you don't need these tools, skip this section.
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `HA_URL` | Home Assistant base URL | `http://homeassistant.local:8123` |
-| `HA_TOKEN` | Long-lived access token | *(from HA Profile → Security)* |
+### 1. Install the SSH app in Home Assistant
 
-### Optional Variables (for file management)
+1. In HA, go to **Settings → Apps → App Store**
+2. Install **Advanced SSH & Web Terminal**
+3. In the app configuration, set the username to `root` (required for SFTP) and enable `sftp: true`
+4. Configure authentication — either set a password or add your public key to `authorized_keys`
+5. Start the app
 
-File management tools require SSH access. Install the "Advanced SSH & Web Terminal" add-on in Home Assistant first.
+### 2. Generate an SSH key (recommended)
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `HA_SSH_HOST` | SSH hostname | `homeassistant.local` |
-| `HA_SSH_PORT` | SSH port | `22` |
-| `HA_SSH_USER` | SSH username (must be `root`) | `root` |
-| `HA_SSH_KEY_PATH` | Path to SSH private key | `C:/Users/you/.ssh/ha_ed25519` |
-| `HA_SSH_PASSWORD` | SSH password (alternative to key) | *(your password)* |
+Key-based authentication is more secure than passwords.
+
+```bash
+ssh-keygen -t ed25519 -f ~/.ssh/ha_ed25519 -C "ha-mcp-server"
+```
+
+Add the **public key** contents (`ha_ed25519.pub`) to the app configuration in HA:
+
+```yaml
+ssh:
+  username: root
+  password: ""
+  authorized_keys:
+    - "ssh-ed25519 AAAA...contents of ha_ed25519.pub..."
+  sftp: true
+```
+
+### 3. Add SSH variables to your MCP config
+
+Create `.vscode/mcp.json` in your workspace (or add to your User Settings) with the SSH variables. This overrides the extension's default configuration:
+
+```json
+{
+  "servers": {
+    "home-assistant": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "hass-mcp-server@latest"],
+      "env": {
+        "HA_URL": "http://homeassistant.local:8123",
+        "HA_TOKEN": "your_long_lived_access_token_here",
+        "HA_SSH_HOST": "homeassistant.local",
+        "HA_SSH_USER": "root",
+        "HA_SSH_KEY_PATH": "/home/you/.ssh/ha_ed25519"
+      }
+    }
+  }
+}
+```
+
+Or if using password authentication instead of a key:
+
+```json
+{
+  "servers": {
+    "home-assistant": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "hass-mcp-server@latest"],
+      "env": {
+        "HA_URL": "http://homeassistant.local:8123",
+        "HA_TOKEN": "your_long_lived_access_token_here",
+        "HA_SSH_HOST": "homeassistant.local",
+        "HA_SSH_USER": "root",
+        "HA_SSH_PASSWORD": "your_ssh_password_here"
+      }
+    }
+  }
+}
+```
+
+#### SSH key path by OS
+
+| OS | Example `HA_SSH_KEY_PATH` |
+|----|---------------------------|
+| **Windows** | `C:/Users/you/.ssh/ha_ed25519` |
+| **macOS** | `/Users/you/.ssh/ha_ed25519` |
+| **Linux** | `/home/you/.ssh/ha_ed25519` |
 
 ## Features
 
