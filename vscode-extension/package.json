@@ -2,7 +2,7 @@
   "name": "hass-mcp-server",
   "displayName": "Home Assistant MCP Server",
   "description": "MCP server for full Home Assistant control — dashboards, files, automations, add-ons, entities, and more",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "publisher": "jarahkon",
   "license": "MIT",
   "icon": "icon.png",
