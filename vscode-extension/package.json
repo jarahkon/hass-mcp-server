@@ -38,7 +38,7 @@
         "command": "npx",
         "args": [
           "-y",
-          "hass-mcp-server@latest"
+          "@jarahkon/hass-mcp-server@latest"
         ],
         "env": {
           "HA_URL": "",

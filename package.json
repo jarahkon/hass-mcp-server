@@ -1,5 +1,5 @@
 {
-  "name": "hass-mcp-server",
+  "name": "@jarahkon/hass-mcp-server",
   "version": "1.0.0",
   "description": "MCP server for full Home Assistant control — dashboards, files, automations, add-ons, and more",
   "type": "module",

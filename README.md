@@ -1,6 +1,6 @@
 # hass-mcp-server
 
-[![npm version](https://img.shields.io/npm/v/hass-mcp-server)](https://www.npmjs.com/package/hass-mcp-server)
+[![npm version](https://img.shields.io/npm/v/@jarahkon/hass-mcp-server)](https://www.npmjs.com/package/@jarahkon/hass-mcp-server)
 [![CI](https://github.com/jarahkon/hass-mcp-server/actions/workflows/ci.yml/badge.svg)](https://github.com/jarahkon/hass-mcp-server/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
@@ -77,7 +77,7 @@ Create `.vscode/mcp.json` in your workspace (or add to your User Settings for gl
     "home-assistant": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "hass-mcp-server@latest"],
+      "args": ["-y", "@jarahkon/hass-mcp-server@latest"],
       "env": {
         "HA_URL": "http://homeassistant.local:8123",
         "HA_TOKEN": "your_long_lived_access_token_here"
@@ -95,7 +95,7 @@ With SSH (for file management tools):
     "home-assistant": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "hass-mcp-server@latest"],
+      "args": ["-y", "@jarahkon/hass-mcp-server@latest"],
       "env": {
         "HA_URL": "http://homeassistant.local:8123",
         "HA_TOKEN": "your_long_lived_access_token_here",
@@ -123,7 +123,7 @@ Edit the Claude Desktop config file:
   "mcpServers": {
     "home-assistant": {
       "command": "npx",
-      "args": ["-y", "hass-mcp-server@latest"],
+      "args": ["-y", "@jarahkon/hass-mcp-server@latest"],
       "env": {
         "HA_URL": "http://homeassistant.local:8123",
         "HA_TOKEN": "your_long_lived_access_token_here"
@@ -142,7 +142,7 @@ Edit `~/.cursor/mcp.json`:
   "mcpServers": {
     "home-assistant": {
       "command": "npx",
-      "args": ["-y", "hass-mcp-server@latest"],
+      "args": ["-y", "@jarahkon/@jarahkon/hass-mcp-server@latest"],
       "env": {
         "HA_URL": "http://homeassistant.local:8123",
         "HA_TOKEN": "your_long_lived_access_token_here"
@@ -154,7 +154,7 @@ Edit `~/.cursor/mcp.json`:
 
 ### Other MCP Clients
 
-Any MCP client that supports stdio servers will work. Use `npx` as the command with `-y hass-mcp-server@latest` as args, and pass `HA_URL` and `HA_TOKEN` in the `env` block.
+Any MCP client that supports stdio servers will work. Use `npx` as the command with `-y @jarahkon/hass-mcp-server@latest` as args, and pass `HA_URL` and `HA_TOKEN` in the `env` block.
 
 ## Setting Up SSH (for file management)
 

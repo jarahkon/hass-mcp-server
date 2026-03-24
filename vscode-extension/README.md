@@ -60,7 +60,7 @@ Create `.vscode/mcp.json` in your workspace (or add to your User Settings) with 
     "home-assistant": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "hass-mcp-server@latest"],
+      "args": ["-y", "@jarahkon/hass-mcp-server@latest"],
       "env": {
         "HA_URL": "http://homeassistant.local:8123",
         "HA_TOKEN": "your_long_lived_access_token_here",
@@ -81,7 +81,7 @@ Or if using password authentication instead of a key:
     "home-assistant": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "hass-mcp-server@latest"],
+      "args": ["-y", "@jarahkon/hass-mcp-server@latest"],
       "env": {
         "HA_URL": "http://homeassistant.local:8123",
         "HA_TOKEN": "your_long_lived_access_token_here",
@@ -122,7 +122,7 @@ Query states, call services, render templates, browse entity/device/area registr
 ## Links
 
 - [GitHub Repository](https://github.com/jarahkon/hass-mcp-server)
-- [npm Package](https://www.npmjs.com/package/hass-mcp-server)
+- [npm Package](https://www.npmjs.com/package/@jarahkon/hass-mcp-server)
 - [Report Issues](https://github.com/jarahkon/hass-mcp-server/issues)
 
 ## License
