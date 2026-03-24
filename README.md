@@ -1,7 +1,7 @@
-# home-assistant-mcp-server
+# hass-mcp-server
 
-[![npm version](https://img.shields.io/npm/v/home-assistant-mcp-server)](https://www.npmjs.com/package/home-assistant-mcp-server)
-[![CI](https://github.com/jarahkon/home-assistant-mcp-server/actions/workflows/ci.yml/badge.svg)](https://github.com/jarahkon/home-assistant-mcp-server/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/hass-mcp-server)](https://www.npmjs.com/package/hass-mcp-server)
+[![CI](https://github.com/jarahkon/hass-mcp-server/actions/workflows/ci.yml/badge.svg)](https://github.com/jarahkon/hass-mcp-server/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 MCP server for full Home Assistant control. AI agents (GitHub Copilot, Claude, etc.) can manage your dashboards, automations, files, apps, entities, and more — so you never have to touch HA settings yourself.
@@ -30,8 +30,8 @@ MCP server for full Home Assistant control. AI agents (GitHub Copilot, Claude, e
 ## Installation
 
 ```bash
-git clone https://github.com/jarahkon/home-assistant-mcp-server.git
-cd home-assistant-mcp-server
+git clone https://github.com/jarahkon/hass-mcp-server.git
+cd hass-mcp-server
 npm install
 npm run build
 ```
@@ -111,7 +111,7 @@ Add this to your VS Code settings (`.vscode/mcp.json` in your workspace or user 
     "home-assistant": {
       "type": "stdio",
       "command": "node",
-      "args": ["C:/path/to/home-assistant-mcp-server/dist/index.js"],
+      "args": ["C:/path/to/hass-mcp-server/dist/index.js"],
       "env": {
         "HA_URL": "http://homeassistant.local:8123",
         "HA_TOKEN": "your_long_lived_access_token_here",

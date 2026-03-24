@@ -1,11 +1,11 @@
 {
-  "name": "home-assistant-mcp-server",
+  "name": "hass-mcp-server",
   "version": "1.0.0",
   "description": "MCP server for full Home Assistant control — dashboards, files, automations, add-ons, and more",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "home-assistant-mcp-server": "dist/index.js"
+    "hass-mcp-server": "dist/index.js"
   },
   "scripts": {
     "build": "tsc",
@@ -26,9 +26,9 @@
   ],
   "license": "MIT",
   "author": "jarahkon",
-  "repository": "github:jarahkon/home-assistant-mcp-server",
-  "homepage": "https://github.com/jarahkon/home-assistant-mcp-server",
-  "bugs": "https://github.com/jarahkon/home-assistant-mcp-server/issues",
+  "repository": "github:jarahkon/hass-mcp-server",
+  "homepage": "https://github.com/jarahkon/hass-mcp-server",
+  "bugs": "https://github.com/jarahkon/hass-mcp-server/issues",
   "engines": {
     "node": ">=20.0.0"
   },

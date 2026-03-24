@@ -27,7 +27,7 @@ async function main(): Promise<void> {
 
   // Create MCP server
   const server = new McpServer({
-    name: "home-assistant-mcp-server",
+    name: "hass-mcp-server",
     version: "1.0.0",
   });
 

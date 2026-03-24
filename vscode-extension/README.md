@@ -1,4 +1,4 @@
-# Home Assistant MCP Server — VS Code Extension
+# Hass MCP Server — VS Code Extension
 
 MCP server for full Home Assistant control. AI agents (GitHub Copilot, Claude, etc.) can manage your dashboards, automations, files, apps, entities, and more — so you never have to touch HA settings yourself.
 
@@ -55,9 +55,9 @@ Query states, call services, render templates, browse entity/device/area registr
 
 ## Links
 
-- [GitHub Repository](https://github.com/jarahkon/home-assistant-mcp-server)
-- [npm Package](https://www.npmjs.com/package/home-assistant-mcp-server)
-- [Report Issues](https://github.com/jarahkon/home-assistant-mcp-server/issues)
+- [GitHub Repository](https://github.com/jarahkon/hass-mcp-server)
+- [npm Package](https://www.npmjs.com/package/hass-mcp-server)
+- [Report Issues](https://github.com/jarahkon/hass-mcp-server/issues)
 
 ## License
 

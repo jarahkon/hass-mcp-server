@@ -1,5 +1,5 @@
 {
-  "name": "home-assistant-mcp-server",
+  "name": "hass-mcp-server",
   "displayName": "Home Assistant MCP Server",
   "description": "MCP server for full Home Assistant control — dashboards, files, automations, add-ons, entities, and more",
   "version": "1.0.0",
@@ -8,11 +8,11 @@
   "icon": "icon.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jarahkon/home-assistant-mcp-server"
+    "url": "https://github.com/jarahkon/hass-mcp-server"
   },
-  "homepage": "https://github.com/jarahkon/home-assistant-mcp-server",
+  "homepage": "https://github.com/jarahkon/hass-mcp-server",
   "bugs": {
-    "url": "https://github.com/jarahkon/home-assistant-mcp-server/issues"
+    "url": "https://github.com/jarahkon/hass-mcp-server/issues"
   },
   "engines": {
     "vscode": "^1.99.0"
@@ -38,7 +38,7 @@
         "command": "npx",
         "args": [
           "-y",
-          "home-assistant-mcp-server@latest"
+          "hass-mcp-server@latest"
         ],
         "env": {
           "HA_URL": "",
