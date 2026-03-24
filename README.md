@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="icon.png" alt="hass-mcp-server" width="128" />
+</p>
+
 # hass-mcp-server
 
 [![npm version](https://img.shields.io/npm/v/@jarahkon/hass-mcp-server)](https://www.npmjs.com/package/@jarahkon/hass-mcp-server)
@@ -5,6 +9,13 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 MCP server for full Home Assistant control. AI agents (GitHub Copilot, Claude, etc.) can manage your dashboards, automations, files, apps, entities, and more — so you never have to touch HA settings yourself.
+
+<a href="https://insiders.vscode.dev/redirect/mcp/install?name=home-assistant&config=%7B%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40jarahkon%2Fhass-mcp-server%40latest%22%5D%2C%22env%22%3A%7B%22HA_URL%22%3A%22%24%7Binput%3Aha-url%7D%22%2C%22HA_TOKEN%22%3A%22%24%7Binput%3Aha-token%7D%22%7D%7D&inputs=%5B%7B%22type%22%3A%22promptString%22%2C%22id%22%3A%22ha-url%22%2C%22description%22%3A%22Home+Assistant+base+URL+%28e.g.+http%3A%2F%2Fhomeassistant.local%3A8123%29%22%7D%2C%7B%22type%22%3A%22promptString%22%2C%22id%22%3A%22ha-token%22%2C%22description%22%3A%22Home+Assistant+long-lived+access+token%22%2C%22password%22%3Atrue%7D%5D">
+  <img src="https://img.shields.io/badge/VS_Code-Install_MCP_Server-0098FF?style=for-the-badge&logo=visualstudiocode&logoColor=white" alt="Install in VS Code">
+</a>
+<a href="https://insiders.vscode.dev/redirect/mcp/install?name=home-assistant&config=%7B%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40jarahkon%2Fhass-mcp-server%40latest%22%5D%2C%22env%22%3A%7B%22HA_URL%22%3A%22%24%7Binput%3Aha-url%7D%22%2C%22HA_TOKEN%22%3A%22%24%7Binput%3Aha-token%7D%22%7D%7D&inputs=%5B%7B%22type%22%3A%22promptString%22%2C%22id%22%3A%22ha-url%22%2C%22description%22%3A%22Home+Assistant+base+URL+%28e.g.+http%3A%2F%2Fhomeassistant.local%3A8123%29%22%7D%2C%7B%22type%22%3A%22promptString%22%2C%22id%22%3A%22ha-token%22%2C%22description%22%3A%22Home+Assistant+long-lived+access+token%22%2C%22password%22%3Atrue%7D%5D&quality=insiders">
+  <img src="https://img.shields.io/badge/VS_Code_Insiders-Install_MCP_Server-24bfa5?style=for-the-badge&logo=visualstudiocode&logoColor=white" alt="Install in VS Code Insiders">
+</a>
 
 ## Features
 
@@ -69,18 +80,37 @@ Choose the setup for your MCP client below. In each case, add the configuration 
 
 ### VS Code (GitHub Copilot)
 
-Create `.vscode/mcp.json` in your workspace (or add to your User Settings for global access):
+**One-click install:** Click the badge at the top of this README, or use the link below. VS Code will prompt you for your Home Assistant URL and access token.
+
+<a href="https://insiders.vscode.dev/redirect/mcp/install?name=home-assistant&config=%7B%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40jarahkon%2Fhass-mcp-server%40latest%22%5D%2C%22env%22%3A%7B%22HA_URL%22%3A%22%24%7Binput%3Aha-url%7D%22%2C%22HA_TOKEN%22%3A%22%24%7Binput%3Aha-token%7D%22%7D%7D&inputs=%5B%7B%22type%22%3A%22promptString%22%2C%22id%22%3A%22ha-url%22%2C%22description%22%3A%22Home+Assistant+base+URL+%28e.g.+http%3A%2F%2Fhomeassistant.local%3A8123%29%22%7D%2C%7B%22type%22%3A%22promptString%22%2C%22id%22%3A%22ha-token%22%2C%22description%22%3A%22Home+Assistant+long-lived+access+token%22%2C%22password%22%3Atrue%7D%5D">
+  <img src="https://img.shields.io/badge/Install_in_VS_Code-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white" alt="Install in VS Code">
+</a>
+
+**Manual setup:** Create `.vscode/mcp.json` in your workspace (or add to your User Settings for global access):
 
 ```json
 {
+  "inputs": [
+    {
+      "type": "promptString",
+      "id": "ha-url",
+      "description": "Home Assistant base URL (e.g. http://homeassistant.local:8123)"
+    },
+    {
+      "type": "promptString",
+      "id": "ha-token",
+      "description": "Home Assistant long-lived access token",
+      "password": true
+    }
+  ],
   "servers": {
     "home-assistant": {
       "type": "stdio",
       "command": "npx",
       "args": ["-y", "@jarahkon/hass-mcp-server@latest"],
       "env": {
-        "HA_URL": "http://homeassistant.local:8123",
-        "HA_TOKEN": "your_long_lived_access_token_here"
+        "HA_URL": "${input:ha-url}",
+        "HA_TOKEN": "${input:ha-token}"
       }
     }
   }
@@ -91,14 +121,27 @@ With SSH (for file management tools):
 
 ```json
 {
+  "inputs": [
+    {
+      "type": "promptString",
+      "id": "ha-url",
+      "description": "Home Assistant base URL (e.g. http://homeassistant.local:8123)"
+    },
+    {
+      "type": "promptString",
+      "id": "ha-token",
+      "description": "Home Assistant long-lived access token",
+      "password": true
+    }
+  ],
   "servers": {
     "home-assistant": {
       "type": "stdio",
       "command": "npx",
       "args": ["-y", "@jarahkon/hass-mcp-server@latest"],
       "env": {
-        "HA_URL": "http://homeassistant.local:8123",
-        "HA_TOKEN": "your_long_lived_access_token_here",
+        "HA_URL": "${input:ha-url}",
+        "HA_TOKEN": "${input:ha-token}",
         "HA_SSH_HOST": "homeassistant.local",
         "HA_SSH_USER": "root",
         "HA_SSH_KEY_PATH": "/home/you/.ssh/ha_ed25519"
@@ -142,7 +185,7 @@ Edit `~/.cursor/mcp.json`:
   "mcpServers": {
     "home-assistant": {
       "command": "npx",
-      "args": ["-y", "@jarahkon/@jarahkon/hass-mcp-server@latest"],
+      "args": ["-y", "@jarahkon/hass-mcp-server@latest"],
       "env": {
         "HA_URL": "http://homeassistant.local:8123",
         "HA_TOKEN": "your_long_lived_access_token_here"

@@ -29,6 +29,7 @@
   "repository": "github:jarahkon/hass-mcp-server",
   "homepage": "https://github.com/jarahkon/hass-mcp-server",
   "bugs": "https://github.com/jarahkon/hass-mcp-server/issues",
+  "mcpName": "io.github.jarahkon/hass-mcp-server",
   "engines": {
     "node": ">=22.0.0"
   },
