@@ -19,10 +19,10 @@
   },
   "keywords": [
     "mcp",
+    "mcp-server",
     "home-assistant",
-    "lovelace",
-    "dashboard",
-    "automation"
+    "copilot",
+    "smart-home"
   ],
   "license": "MIT",
   "author": "jarahkon",
