@@ -18,7 +18,7 @@ MCP server for full Home Assistant control. AI agents (GitHub Copilot, Claude, e
 - **Event & calendar tools** — List event types, fire events, calendar queries
 - **State management** — Set, delete entity states; handle intents
 
-**65 tools** across 5 categories, using three HA transport layers: REST API, WebSocket API, and SSH/SFTP.
+**66 tools** across 5 categories, using three HA transport layers: REST API, WebSocket API, and SSH/SFTP.
 
 ## Prerequisites
 
@@ -187,7 +187,7 @@ The server communicates via stdio — it's meant to be launched by an MCP client
 | `ha_update_helper` | Update an existing helper |
 | `ha_delete_helper` | Delete a helper |
 
-### Apps & System (17 tools)
+### Apps & System (18 tools)
 
 | Tool | Description |
 |------|-------------|
@@ -206,6 +206,7 @@ The server communicates via stdio — it's meant to be launched by an MCP client
 | `ha_restart_core` | Restart Home Assistant core |
 | `ha_check_api` | Check if the HA API is accessible and responding |
 | `ha_get_config` | Get HA configuration (location, units, version, components) |
+| `ha_update_core_config` | Update core configuration (internal/external URL, location, units) |
 | `ha_get_components` | List all loaded HA integrations/components |
 | `ha_get_error_log` | Get the Home Assistant error log contents |
 
@@ -254,13 +255,13 @@ src/
     ├── dashboards.ts     # 6 dashboard tools
     ├── files.ts          # 7 file management tools
     ├── automations.ts    # 17 automation/script/scene/helper tools
-    ├── addons.ts         # 17 app and system tools
+    ├── addons.ts         # 18 app and system tools
     └── entities.ts       # 18 entity and service tools
 ```
 
 ## Security Notes
 
-- **SFTP path restrictions**: File operations are restricted to safe subdirectories under `/config/` (e.g., `www/`, `custom_components/`, `themes/`, `blueprints/`). Write operations to system directories like `deps/` or `.storage/` are blocked.
+- **SFTP path restrictions**: Read operations are allowed anywhere under `/config/`. Write and delete operations are restricted to safe subdirectories (`www/`, `custom_components/`, `themes/`, `blueprints/`, `scripts/`, `automations/`) and specific files (`configuration.yaml`). Write operations to system directories like `deps/` or `.storage/` are blocked.
 - **Token security**: Never commit your `.env` file. The `.gitignore` already excludes it.
 - **SSH authentication**: Prefer SSH key-based auth (`HA_SSH_KEY_PATH`) over passwords. Never commit private keys or passwords to source control.
 
