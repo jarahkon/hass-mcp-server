@@ -1,0 +1,67 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.jarahkon/hass-mcp-server",
+  "title": "Home Assistant MCP Server",
+  "description": "MCP server for full Home Assistant control — dashboards, files, automations, add-ons, and more",
+  "version": "1.0.5",
+  "repository": {
+    "url": "https://github.com/jarahkon/hass-mcp-server",
+    "source": "github"
+  },
+  "websiteUrl": "https://github.com/jarahkon/hass-mcp-server",
+  "icons": [
+    {
+      "src": "https://raw.githubusercontent.com/jarahkon/hass-mcp-server/main/icon.png",
+      "mimeType": "image/png"
+    }
+  ],
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@jarahkon/hass-mcp-server",
+      "version": "1.0.5",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "HA_URL",
+          "description": "Home Assistant base URL (e.g. http://homeassistant.local:8123)",
+          "isRequired": true
+        },
+        {
+          "name": "HA_TOKEN",
+          "description": "Home Assistant long-lived access token",
+          "isRequired": true,
+          "isSecret": true
+        },
+        {
+          "name": "HA_SSH_HOST",
+          "description": "SSH hostname for file management (optional)",
+          "isRequired": false
+        },
+        {
+          "name": "HA_SSH_PORT",
+          "description": "SSH port (default: 22)",
+          "isRequired": false
+        },
+        {
+          "name": "HA_SSH_USER",
+          "description": "SSH username (must be root)",
+          "isRequired": false
+        },
+        {
+          "name": "HA_SSH_KEY_PATH",
+          "description": "Path to SSH private key",
+          "isRequired": false
+        },
+        {
+          "name": "HA_SSH_PASSWORD",
+          "description": "SSH password (alternative to key)",
+          "isRequired": false,
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}

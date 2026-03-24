@@ -36,7 +36,9 @@
   "files": [
     "dist",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "icon.png",
+    "server.json"
   ],
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.27.1",
