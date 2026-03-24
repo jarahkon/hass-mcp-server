@@ -28,7 +28,7 @@ async function main(): Promise<void> {
   // Create MCP server
   const server = new McpServer({
     name: "hass-mcp-server",
-    version: "1.0.2",
+    version: "1.0.3",
   });
 
   // Register all tool groups
