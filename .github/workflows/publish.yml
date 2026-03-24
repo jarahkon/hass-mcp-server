@@ -41,6 +41,6 @@ jobs:
 
       - name: Publish to VS Code Marketplace
         working-directory: vscode-extension
-        run: vsce publish
+        run: vsce publish --tags mcp mcp-server home-assistant
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
