@@ -3,7 +3,6 @@
   "name": "io.github.jarahkon/hass-mcp-server",
   "title": "Home Assistant MCP Server",
   "description": "MCP server for full Home Assistant control — dashboards, files, automations, add-ons, and more",
-  "version": "1.0.5",
   "repository": {
     "url": "https://github.com/jarahkon/hass-mcp-server",
     "source": "github"
@@ -15,6 +14,7 @@
       "mimeType": "image/png"
     }
   ],
+  "version": "1.0.5",
   "packages": [
     {
       "registryType": "npm",
