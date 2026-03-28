@@ -1,0 +1,95 @@
+{
+  "name": "hass-mcp-server",
+  "displayName": "Home Assistant MCP Server",
+  "description": "MCP server for controlling Home Assistant — 66 tools across dashboards, entities, automations, files, and system management",
+  "version": "1.0.6",
+  "publisher": "jarahkon",
+  "license": "MIT",
+  "icon": "icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jarahkon/hass-mcp-server"
+  },
+  "categories": [
+    "AI",
+    "Other"
+  ],
+  "keywords": [
+    "home-assistant",
+    "mcp",
+    "iot",
+    "smart-home",
+    "copilot"
+  ],
+  "engines": {
+    "vscode": "^1.101.0"
+  },
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "hass-mcp-server.setToken",
+        "title": "Home Assistant MCP: Set Access Token"
+      },
+      {
+        "command": "hass-mcp-server.deleteToken",
+        "title": "Home Assistant MCP: Delete Access Token"
+      },
+      {
+        "command": "hass-mcp-server.setSshPassword",
+        "title": "Home Assistant MCP: Set SSH Password"
+      }
+    ],
+    "configuration": {
+      "title": "Home Assistant MCP Server",
+      "properties": {
+        "homeAssistantMcp.url": {
+          "type": "string",
+          "default": "",
+          "description": "Home Assistant URL (e.g., http://homeassistant.local:8123)",
+          "order": 1
+        },
+        "homeAssistantMcp.ssh.host": {
+          "type": "string",
+          "default": "",
+          "description": "SSH host for SFTP file operations (optional)",
+          "order": 2
+        },
+        "homeAssistantMcp.ssh.port": {
+          "type": "number",
+          "default": 22,
+          "description": "SSH port",
+          "order": 3
+        },
+        "homeAssistantMcp.ssh.user": {
+          "type": "string",
+          "default": "",
+          "description": "SSH username",
+          "order": 4
+        },
+        "homeAssistantMcp.ssh.keyPath": {
+          "type": "string",
+          "default": "",
+          "description": "Path to SSH private key file",
+          "order": 5
+        }
+      }
+    },
+    "mcpServerDefinitionProviders": [
+      {
+        "id": "homeAssistantMcp",
+        "label": "Home Assistant"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "@types/vscode": "^1.101.0",
+    "typescript": "^5.9.3"
+  }
+}
