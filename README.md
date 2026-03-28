@@ -5,16 +5,20 @@
 # hass-mcp-server
 
 [![npm version](https://img.shields.io/npm/v/@jarahkon/hass-mcp-server)](https://www.npmjs.com/package/@jarahkon/hass-mcp-server)
+[![VS Code Marketplace](https://img.shields.io/visual-studio-marketplace/v/jarahkon.hass-mcp-server)](https://marketplace.visualstudio.com/items?itemName=jarahkon.hass-mcp-server)
 [![CI](https://github.com/jarahkon/hass-mcp-server/actions/workflows/ci.yml/badge.svg)](https://github.com/jarahkon/hass-mcp-server/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 MCP server for full Home Assistant control. AI agents (GitHub Copilot, Claude, etc.) can manage your dashboards, automations, files, apps, entities, and more — so you never have to touch HA settings yourself.
 
-<a href="https://insiders.vscode.dev/redirect/mcp/install?name=home-assistant&config=%7B%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40jarahkon%2Fhass-mcp-server%40latest%22%5D%2C%22env%22%3A%7B%22HA_URL%22%3A%22%24%7Binput%3Aha-url%7D%22%2C%22HA_TOKEN%22%3A%22%24%7Binput%3Aha-token%7D%22%7D%7D&inputs=%5B%7B%22type%22%3A%22promptString%22%2C%22id%22%3A%22ha-url%22%2C%22description%22%3A%22Home+Assistant+base+URL+%28e.g.+http%3A%2F%2Fhomeassistant.local%3A8123%29%22%7D%2C%7B%22type%22%3A%22promptString%22%2C%22id%22%3A%22ha-token%22%2C%22description%22%3A%22Home+Assistant+long-lived+access+token%22%2C%22password%22%3Atrue%7D%5D">
-  <img src="https://img.shields.io/badge/VS_Code-Install_MCP_Server-0098FF?style=for-the-badge&logo=visualstudiocode&logoColor=white" alt="Install in VS Code">
+<a href="https://marketplace.visualstudio.com/items?itemName=jarahkon.hass-mcp-server">
+  <img src="https://img.shields.io/badge/VS_Code-Install_Extension-0098FF?style=for-the-badge&logo=visualstudiocode&logoColor=white" alt="Install VS Code Extension">
 </a>
-<a href="https://insiders.vscode.dev/redirect/mcp/install?name=home-assistant&config=%7B%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40jarahkon%2Fhass-mcp-server%40latest%22%5D%2C%22env%22%3A%7B%22HA_URL%22%3A%22%24%7Binput%3Aha-url%7D%22%2C%22HA_TOKEN%22%3A%22%24%7Binput%3Aha-token%7D%22%7D%7D&inputs=%5B%7B%22type%22%3A%22promptString%22%2C%22id%22%3A%22ha-url%22%2C%22description%22%3A%22Home+Assistant+base+URL+%28e.g.+http%3A%2F%2Fhomeassistant.local%3A8123%29%22%7D%2C%7B%22type%22%3A%22promptString%22%2C%22id%22%3A%22ha-token%22%2C%22description%22%3A%22Home+Assistant+long-lived+access+token%22%2C%22password%22%3Atrue%7D%5D&quality=insiders">
-  <img src="https://img.shields.io/badge/VS_Code_Insiders-Install_MCP_Server-24bfa5?style=for-the-badge&logo=visualstudiocode&logoColor=white" alt="Install in VS Code Insiders">
+<a href="https://insiders.vscode.dev/redirect/mcp/install?name=home-assistant&config=%7B%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40jarahkon%2Fhass-mcp-server%40latest%22%5D%2C%22env%22%3A%7B%22HA_URL%22%3A%22%24%7Binput%3Aha-url%7D%22%2C%22HA_TOKEN%22%3A%22%24%7Binput%3Aha-token%7D%22%7D%7D&inputs=%5B%7B%22type%22%3A%22promptString%22%2C%22id%22%3A%22ha-url%22%2C%22description%22%3A%22Home+Assistant+base+URL+%28e.g.+http%3A%2F%2Fhomeassistant.local%3A8123%29%22%7D%2C%7B%22type%22%3A%22promptString%22%2C%22id%22%3A%22ha-token%22%2C%22description%22%3A%22Home+Assistant+long-lived+access+token%22%2C%22password%22%3Atrue%7D%5D">
+  <img src="https://img.shields.io/badge/VS_Code-Install_via_mcp.json-0098FF?style=for-the-badge&logo=visualstudiocode&logoColor=white" alt="Install in VS Code">
+</a>
+<a href="https://insiders.vscode.dev/redirect/mcp/install?name=home-assistant&config=%7B%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40jarahkon%2Fhass-mcp-server%40latest%22%5D%2C%22env%22%3A%7B%22HA_URL%22%3A%22%24%7Binput%3Aha-url%7D%22%2C%22HA_TOKEN%22%3A%22%24%7Binput%3Aha-token%7D%22%7D%7D&inputs=%5B%7B%22type%22%3A%22promptString%22%2C%22id%22%3A%22ha-url%22%2C%22description%22%3A%22Home+Assistant+base+URL+%28e.g.+http%3A%2F%2Fhomeassistant.local%3A8123%29%22%2C%22password%22%3Atrue%7D%5D&quality=insiders">
+  <img src="https://img.shields.io/badge/VS_Code_Insiders-Install_via_mcp.json-24bfa5?style=for-the-badge&logo=visualstudiocode&logoColor=white" alt="Install in VS Code Insiders">
 </a>
 
 ## Features
@@ -80,13 +84,28 @@ Choose the setup for your MCP client below. In each case, add the configuration 
 
 ### VS Code (GitHub Copilot)
 
-**One-click install:** Click the badge at the top of this README, or use the link below. VS Code will prompt you for your Home Assistant URL and access token.
+#### Option A: Install the extension (recommended)
+
+The easiest way — install the [Home Assistant MCP Server](https://marketplace.visualstudio.com/items?itemName=jarahkon.hass-mcp-server) extension from the VS Code Marketplace. It registers the MCP server automatically and stores your credentials securely.
+
+1. Install the extension from the Marketplace (or search "Home Assistant MCP Server" in the Extensions view).
+2. Set your Home Assistant URL in Settings → `homeAssistantMcp.url`.
+3. Run **"Home Assistant MCP: Set Access Token"** from the Command Palette (`Ctrl+Shift+P`).
+4. The MCP server appears in Copilot Chat automatically.
+
+For file management, configure the SSH settings (`homeAssistantMcp.ssh.*`) and optionally run **"Home Assistant MCP: Set SSH Password"**.
+
+#### Option B: One-click install via `mcp.json`
+
+Click the badge at the top of this README, or use the link below. VS Code will prompt you for your Home Assistant URL and access token.
 
 <a href="https://insiders.vscode.dev/redirect/mcp/install?name=home-assistant&config=%7B%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22%40jarahkon%2Fhass-mcp-server%40latest%22%5D%2C%22env%22%3A%7B%22HA_URL%22%3A%22%24%7Binput%3Aha-url%7D%22%2C%22HA_TOKEN%22%3A%22%24%7Binput%3Aha-token%7D%22%7D%7D&inputs=%5B%7B%22type%22%3A%22promptString%22%2C%22id%22%3A%22ha-url%22%2C%22description%22%3A%22Home+Assistant+base+URL+%28e.g.+http%3A%2F%2Fhomeassistant.local%3A8123%29%22%7D%2C%7B%22type%22%3A%22promptString%22%2C%22id%22%3A%22ha-token%22%2C%22description%22%3A%22Home+Assistant+long-lived+access+token%22%2C%22password%22%3Atrue%7D%5D">
   <img src="https://img.shields.io/badge/Install_in_VS_Code-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white" alt="Install in VS Code">
 </a>
 
-**Manual setup:** Create `.vscode/mcp.json` in your workspace (or add to your User Settings for global access):
+#### Option C: Manual `mcp.json` setup
+
+Create `.vscode/mcp.json` in your workspace (or add to your User Settings for global access):
 
 ```json
 {
@@ -376,6 +395,10 @@ src/
     ├── automations.ts    # 17 automation/script/scene/helper tools
     ├── addons.ts         # 18 app and system tools
     └── entities.ts       # 18 entity and service tools
+
+vscode-extension/         # VS Code Marketplace extension wrapper
+└── src/
+    └── extension.ts      # Registers MCP server via mcpServerDefinitionProviders API
 ```
 
 ## Security Notes
