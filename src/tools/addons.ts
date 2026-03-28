@@ -246,7 +246,11 @@ export function registerSystemTools(server: McpServer, rest: RestClient, ws: WsC
       description: "Restart the Home Assistant core. This will briefly make HA unavailable.",
     },
     async () => {
-      await rest.post("/api/hassio/core/restart");
+      try {
+        await rest.post("/api/services/homeassistant/restart");
+      } catch {
+        // Expected: HA goes down before responding, causing 502/504/connection errors
+      }
       return {
         content: [
           {
