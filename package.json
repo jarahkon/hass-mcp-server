@@ -1,6 +1,6 @@
 {
   "name": "@jarahkon/hass-mcp-server",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "MCP server for full Home Assistant control — dashboards, files, automations, add-ons, and more",
   "type": "module",
   "main": "dist/index.js",
@@ -15,7 +15,8 @@
     "format": "prettier --write src/",
     "check": "tsc --noEmit && eslint src/",
     "test": "vitest run",
-    "prepublishOnly": "tsc"
+    "prepublishOnly": "tsc",
+    "bump-version": "node scripts/bump-version.mjs"
   },
   "keywords": [
     "mcp",
