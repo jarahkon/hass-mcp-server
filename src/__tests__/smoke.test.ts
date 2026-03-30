@@ -28,9 +28,9 @@ describe("MCP tool registration smoke test", () => {
 
     registerDashboardTools(server, mockWs);
     registerFileTools(server, mockSftp);
-    registerAutomationTools(server, mockWs);
-    registerScriptTools(server, mockWs);
-    registerSceneTools(server, mockWs);
+    registerAutomationTools(server, mockRest);
+    registerScriptTools(server, mockRest);
+    registerSceneTools(server, mockRest);
     registerHelperTools(server, mockWs);
     registerAddonTools(server, mockRest);
     registerSystemTools(server, mockRest, mockWs);

@@ -1,16 +1,29 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
+import type { RestClient } from "../ha/rest-client.js";
 import type { WsClient } from "../ha/ws-client.js";
 
-export function registerAutomationTools(server: McpServer, ws: WsClient): void {
+export function registerAutomationTools(server: McpServer, rest: RestClient): void {
   server.registerTool(
     "ha_list_automations",
     {
       description: "List all automations in Home Assistant with their IDs, aliases, and states",
     },
     async () => {
-      const result = await ws.sendCommand("config/automation/list");
-      return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+      const states =
+        await rest.get<
+          Array<{ entity_id: string; state: string; attributes: Record<string, unknown> }>
+        >("/api/states");
+      const automations = states
+        .filter((s) => s.entity_id.startsWith("automation."))
+        .map((s) => ({
+          entity_id: s.entity_id,
+          state: s.state,
+          alias: s.attributes.friendly_name,
+          id: s.attributes.id,
+          last_triggered: s.attributes.last_triggered,
+        }));
+      return { content: [{ type: "text", text: JSON.stringify(automations, null, 2) }] };
     },
   );
 
@@ -19,11 +32,15 @@ export function registerAutomationTools(server: McpServer, ws: WsClient): void {
     {
       description: "Get the full configuration of an automation by its ID",
       inputSchema: {
-        automation_id: z.string().describe("The automation ID (from ha_list_automations)"),
+        automation_id: z
+          .string()
+          .describe("The automation config key/ID (the 'id' field from ha_list_automations)"),
       },
     },
     async ({ automation_id }) => {
-      const result = await ws.sendCommand("config/automation/config", { entity_id: automation_id });
+      const result = await rest.get(
+        `/api/config/automation/config/${encodeURIComponent(automation_id)}`,
+      );
       return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
     },
   );
@@ -36,15 +53,22 @@ export function registerAutomationTools(server: McpServer, ws: WsClient): void {
         config: z
           .record(z.unknown())
           .describe(
-            "Full automation config object. Must include: alias, trigger, action. Optional: condition, mode, description.",
+            "Full automation config object. Must include: alias, trigger/triggers, action/actions. Optional: condition/conditions, mode, description.",
           ),
       },
     },
     async ({ config }) => {
-      const result = await ws.sendCommand("config/automation/config", config);
+      const id = crypto.randomUUID();
+      const result = await rest.post(
+        `/api/config/automation/config/${encodeURIComponent(id)}`,
+        config,
+      );
       return {
         content: [
-          { type: "text", text: `Automation created.\n${JSON.stringify(result, null, 2)}` },
+          {
+            type: "text",
+            text: `Automation created (id: ${id}).\n${JSON.stringify(result, null, 2)}`,
+          },
         ],
       };
     },
@@ -55,15 +79,15 @@ export function registerAutomationTools(server: McpServer, ws: WsClient): void {
     {
       description: "Update an existing automation's configuration",
       inputSchema: {
-        automation_id: z.string().describe("The automation ID to update"),
+        automation_id: z.string().describe("The automation config key/ID to update"),
         config: z.record(z.unknown()).describe("Updated automation config (same format as create)"),
       },
     },
     async ({ automation_id, config }) => {
-      const result = await ws.sendCommand("config/automation/update", {
-        automation_id,
-        ...config,
-      });
+      const result = await rest.post(
+        `/api/config/automation/config/${encodeURIComponent(automation_id)}`,
+        config,
+      );
       return {
         content: [
           { type: "text", text: `Automation updated.\n${JSON.stringify(result, null, 2)}` },
@@ -77,25 +101,39 @@ export function registerAutomationTools(server: McpServer, ws: WsClient): void {
     {
       description: "Delete an automation",
       inputSchema: {
-        automation_id: z.string().describe("The automation ID to delete"),
+        automation_id: z.string().describe("The automation config key/ID to delete"),
       },
     },
     async ({ automation_id }) => {
-      await ws.sendCommand("config/automation/delete", { automation_id });
+      await rest.delete(
+        `/api/config/automation/config/${encodeURIComponent(automation_id)}`,
+      );
       return { content: [{ type: "text", text: `Automation '${automation_id}' deleted.` }] };
     },
   );
 }
 
-export function registerScriptTools(server: McpServer, ws: WsClient): void {
+export function registerScriptTools(server: McpServer, rest: RestClient): void {
   server.registerTool(
     "ha_list_scripts",
     {
       description: "List all scripts in Home Assistant",
     },
     async () => {
-      const result = await ws.sendCommand("config/script/list");
-      return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+      const states =
+        await rest.get<
+          Array<{ entity_id: string; state: string; attributes: Record<string, unknown> }>
+        >("/api/states");
+      const scripts = states
+        .filter((s) => s.entity_id.startsWith("script."))
+        .map((s) => ({
+          entity_id: s.entity_id,
+          object_id: s.entity_id.replace("script.", ""),
+          state: s.state,
+          alias: s.attributes.friendly_name,
+          last_triggered: s.attributes.last_triggered,
+        }));
+      return { content: [{ type: "text", text: JSON.stringify(scripts, null, 2) }] };
     },
   );
 
@@ -113,10 +151,10 @@ export function registerScriptTools(server: McpServer, ws: WsClient): void {
       },
     },
     async ({ object_id, config }) => {
-      const result = await ws.sendCommand("config/script/config", {
-        object_id,
-        ...config,
-      });
+      const result = await rest.post(
+        `/api/config/script/config/${encodeURIComponent(object_id)}`,
+        config,
+      );
       return {
         content: [{ type: "text", text: `Script created.\n${JSON.stringify(result, null, 2)}` }],
       };
@@ -133,10 +171,10 @@ export function registerScriptTools(server: McpServer, ws: WsClient): void {
       },
     },
     async ({ object_id, config }) => {
-      const result = await ws.sendCommand("config/script/config", {
-        object_id,
-        ...config,
-      });
+      const result = await rest.post(
+        `/api/config/script/config/${encodeURIComponent(object_id)}`,
+        config,
+      );
       return {
         content: [{ type: "text", text: `Script updated.\n${JSON.stringify(result, null, 2)}` }],
       };
@@ -152,21 +190,32 @@ export function registerScriptTools(server: McpServer, ws: WsClient): void {
       },
     },
     async ({ object_id }) => {
-      await ws.sendCommand("config/script/delete", { object_id });
+      await rest.delete(`/api/config/script/config/${encodeURIComponent(object_id)}`);
       return { content: [{ type: "text", text: `Script '${object_id}' deleted.` }] };
     },
   );
 }
 
-export function registerSceneTools(server: McpServer, ws: WsClient): void {
+export function registerSceneTools(server: McpServer, rest: RestClient): void {
   server.registerTool(
     "ha_list_scenes",
     {
       description: "List all scenes in Home Assistant",
     },
     async () => {
-      const result = await ws.sendCommand("config/scene/list");
-      return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+      const states =
+        await rest.get<
+          Array<{ entity_id: string; state: string; attributes: Record<string, unknown> }>
+        >("/api/states");
+      const scenes = states
+        .filter((s) => s.entity_id.startsWith("scene."))
+        .map((s) => ({
+          entity_id: s.entity_id,
+          state: s.state,
+          name: s.attributes.friendly_name,
+          id: s.attributes.id,
+        }));
+      return { content: [{ type: "text", text: JSON.stringify(scenes, null, 2) }] };
     },
   );
 
@@ -183,9 +232,18 @@ export function registerSceneTools(server: McpServer, ws: WsClient): void {
       },
     },
     async ({ config }) => {
-      const result = await ws.sendCommand("config/scene/config", config);
+      const id = crypto.randomUUID();
+      const result = await rest.post(
+        `/api/config/scene/config/${encodeURIComponent(id)}`,
+        config,
+      );
       return {
-        content: [{ type: "text", text: `Scene created.\n${JSON.stringify(result, null, 2)}` }],
+        content: [
+          {
+            type: "text",
+            text: `Scene created (id: ${id}).\n${JSON.stringify(result, null, 2)}`,
+          },
+        ],
       };
     },
   );
@@ -200,10 +258,10 @@ export function registerSceneTools(server: McpServer, ws: WsClient): void {
       },
     },
     async ({ scene_id, config }) => {
-      const result = await ws.sendCommand("config/scene/config", {
-        scene_id,
-        ...config,
-      });
+      const result = await rest.post(
+        `/api/config/scene/config/${encodeURIComponent(scene_id)}`,
+        config,
+      );
       return {
         content: [{ type: "text", text: `Scene updated.\n${JSON.stringify(result, null, 2)}` }],
       };
@@ -219,7 +277,7 @@ export function registerSceneTools(server: McpServer, ws: WsClient): void {
       },
     },
     async ({ scene_id }) => {
-      await ws.sendCommand("config/scene/delete", { scene_id });
+      await rest.delete(`/api/config/scene/config/${encodeURIComponent(scene_id)}`);
       return { content: [{ type: "text", text: `Scene '${scene_id}' deleted.` }] };
     },
   );
@@ -254,7 +312,7 @@ export function registerHelperTools(server: McpServer, ws: WsClient): void {
       const results: Record<string, unknown> = {};
       for (const d of domains) {
         try {
-          results[d] = await ws.sendCommand(`config/${d}/list`);
+          results[d] = await ws.sendCommand(`${d}/list`);
         } catch {
           results[d] = "(not available or empty)";
         }
@@ -280,7 +338,7 @@ export function registerHelperTools(server: McpServer, ws: WsClient): void {
       },
     },
     async ({ domain, config }) => {
-      const result = await ws.sendCommand(`config/${domain}/create`, config);
+      const result = await ws.sendCommand(`${domain}/create`, config);
       return {
         content: [{ type: "text", text: `Helper created.\n${JSON.stringify(result, null, 2)}` }],
       };
@@ -298,7 +356,7 @@ export function registerHelperTools(server: McpServer, ws: WsClient): void {
       },
     },
     async ({ domain, helper_id, config }) => {
-      const result = await ws.sendCommand(`config/${domain}/update`, {
+      const result = await ws.sendCommand(`${domain}/update`, {
         [`${domain}_id`]: helper_id,
         ...config,
       });
@@ -318,7 +376,7 @@ export function registerHelperTools(server: McpServer, ws: WsClient): void {
       },
     },
     async ({ domain, helper_id }) => {
-      await ws.sendCommand(`config/${domain}/delete`, {
+      await ws.sendCommand(`${domain}/delete`, {
         [`${domain}_id`]: helper_id,
       });
       return { content: [{ type: "text", text: `Helper '${helper_id}' (${domain}) deleted.` }] };
