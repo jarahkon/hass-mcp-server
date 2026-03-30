@@ -34,9 +34,9 @@ async function main(): Promise<void> {
   // Register all tool groups
   registerDashboardTools(server, ws);
   registerFileTools(server, sftp);
-  registerAutomationTools(server, ws);
-  registerScriptTools(server, ws);
-  registerSceneTools(server, ws);
+  registerAutomationTools(server, rest);
+  registerScriptTools(server, rest);
+  registerSceneTools(server, rest);
   registerHelperTools(server, ws);
   registerAddonTools(server, rest);
   registerSystemTools(server, rest, ws);

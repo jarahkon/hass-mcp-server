@@ -16,6 +16,9 @@ const ALLOWED_PREFIXES = [
 
 const ALLOWED_FILES = [
   "/config/configuration.yaml",
+  "/config/automations.yaml",
+  "/config/scripts.yaml",
+  "/config/scenes.yaml",
 ];
 
 export class HaSftpClient {
