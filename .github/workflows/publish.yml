@@ -40,8 +40,6 @@ jobs:
         with:
           node-version: 24.x
 
-      - run: cp ../icon.png icon.png
-
       - run: npm ci
       - run: npx tsc --noEmit
       - run: npx @vscode/vsce publish --no-dependencies
