@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="icon.png" alt="hass-mcp-server" width="128" />
+  <img src="icon.png" alt="hass-mcp-server" width="256" />
 </p>
 
 # hass-mcp-server
