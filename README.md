@@ -377,8 +377,8 @@ The server uses three transport layers to communicate with Home Assistant:
 
 | Layer | Used For | Library |
 |-------|----------|---------|
-| REST API (`/api/...`) | Service calls, states, history, templates, Supervisor proxy | Built-in `fetch` |
-| WebSocket API (`/api/websocket`) | Dashboard CRUD, automation/script/scene/helper CRUD, entity registry | `ws` |
+| REST API (`/api/...`) | Service calls, states, history, templates, Supervisor proxy, automation/script/scene CRUD | Built-in `fetch` |
+| WebSocket API (`/api/websocket`) | Dashboard CRUD, helper CRUD, entity registry | `ws` |
 | SSH/SFTP | File upload/download/list/delete on HA filesystem | `ssh2-sftp-client` |
 
 ```
@@ -403,7 +403,7 @@ vscode-extension/         # VS Code Marketplace extension wrapper
 
 ## Security Notes
 
-- **SFTP path restrictions**: Read operations are allowed anywhere under `/config/`. Write and delete operations are restricted to safe subdirectories (`www/`, `custom_components/`, `themes/`, `blueprints/`, `scripts/`, `automations/`) and specific files (`configuration.yaml`). Write operations to system directories like `deps/` or `.storage/` are blocked.
+- **SFTP path restrictions**: Read operations are allowed anywhere under `/config/`. Write and delete operations are restricted to safe subdirectories (`www/`, `custom_components/`, `themes/`, `blueprints/`, `scripts/`, `automations/`) and specific files (`configuration.yaml`, `automations.yaml`, `scripts.yaml`, `scenes.yaml`). Write operations to system directories like `deps/` or `.storage/` are blocked.
 - **Token security**: Never commit your `.env` file. The `.gitignore` already excludes it.
 - **SSH authentication**: Prefer SSH key-based auth (`HA_SSH_KEY_PATH`) over passwords. Never commit private keys or passwords to source control.
 
