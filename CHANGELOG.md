@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.10] — 2026-03-30
+
+### Fixed
+
+- **Automations, scripts, scenes**: Switched from non-existent WebSocket commands to the correct REST API endpoints (`/api/config/{type}/config/{id}`)
+- **Input helpers**: Fixed WebSocket command prefix — removed erroneous `config/` prefix (e.g. `input_datetime/create` instead of `config/input_datetime/create`)
+- **SFTP**: Added `automations.yaml`, `scripts.yaml`, and `scenes.yaml` to the allowed write/delete file list
+
+### Changed
+
+- Automation, script, and scene tools now use `RestClient` instead of `WsClient`
+
 ## [1.0.0] — 2026-03-22
 
 ### Added
