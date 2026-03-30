@@ -14,12 +14,12 @@
       "mimeType": "image/png"
     }
   ],
-  "version": "1.0.8",
+  "version": "1.0.9",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "@jarahkon/hass-mcp-server",
-      "version": "1.0.8",
+      "version": "1.0.9",
       "transport": {
         "type": "stdio"
       },
