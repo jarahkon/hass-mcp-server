@@ -5,7 +5,6 @@
 # hass-mcp-server
 
 [![npm version](https://img.shields.io/npm/v/@jarahkon/hass-mcp-server)](https://www.npmjs.com/package/@jarahkon/hass-mcp-server)
-[![VS Code Marketplace](https://img.shields.io/visual-studio-marketplace/v/jarahkon.hass-mcp-server)](https://marketplace.visualstudio.com/items?itemName=jarahkon.hass-mcp-server)
 [![CI](https://github.com/jarahkon/hass-mcp-server/actions/workflows/ci.yml/badge.svg)](https://github.com/jarahkon/hass-mcp-server/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
